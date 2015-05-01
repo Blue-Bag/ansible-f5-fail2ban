@@ -1,0 +1,68 @@
+---
+# Enable service on boot
+fail2ban_service_enabled: yes
+
+# Allowed setting are: started, stopped
+fail2ban_service_state: started
+
+# Allowed setting are: installed, latest
+fail2ban_pkg_state: installed
+
+# "ignoreip" can be a single IP address, a CIDR mask or a DNS host or a list of IP addresses (see readme)
+fail2ban_config_ignoreip:
+  - "{{ ansible_ssh_host }}"
+  - "127.0.0.1/8"
+
+# 24 hours = 3600*24 = 86400
+# -1 = permanent
+fail2ban_config_bantime: 86400
+fail2ban_config_maxretry: 3
+fail2ban_config_destemail: ""
+
+# select ban option on specified ports or all ports
+fail2ban_config_banaction: iptables-allports
+
+# Jail Action:
+# specify the action to take:
+# The simplest action to take: ban only
+# "%(action_)s"
+
+# ban & send an e-mail with whois report to the destemail.
+# "%(action_mw)s"
+
+# ban & send an e-mail with whois report and relevant log lines to the destemail.
+# "%(action_mwl)s"
+
+# See the IMPORTANT note in action.d/xarf-login-attack for when to use this action
+# ban & send a xarf e-mail to abuse contact of IP address and include relevant log lines
+# to the destemail.
+# "%(action_xarf)s"
+
+fail2ban_config_jailaction: "%(action_mwl)s"
+
+# Jails
+fail2ban_config_jail_ssh_enabled: true
+fail2ban_config_jail_sshddos_enabled: true
+fail2ban_config_jail_webmin_enabled: true
+fail2ban_config_jail_apache_enabled: true
+fail2ban_config_jail_exim_enabled: true
+fail2ban_config_jail_pamgeneric_enabled: true
+fail2ban_config_jail_php_enabled: true
+fail2ban_config_jail_ftp_enabled: true
+
+# updated from https://github.com/Oefenweb/ansible-fail2ban
+# defaults file for fail2ban
+fail2ban_loglevel: 3
+fail2ban_logtarget: /var/log/fail2ban.log
+fail2ban_syslog_target: /var/log/fail2ban.log
+fail2ban_syslog_facility: 1
+fail2ban_socket: /var/run/fail2ban/fail2ban.sock
+fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
+
+
+fail2ban_backend: auto
+
+fail2ban_mta: sendmail
+fail2ban_protocol: tcp
+fail2ban_chain: INPUT
+fail2ban_action: action_

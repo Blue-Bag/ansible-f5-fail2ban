@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: George Boobyer
+  company: Blue-Bag Ltd
+  license: MIT
+  min_ansible_version: 1.8
+
+  platforms:
+  - name: EL
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+  categories:
+  - system
+
+dependencies: []
