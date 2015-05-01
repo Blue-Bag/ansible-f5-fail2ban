@@ -10,10 +10,6 @@
   when: ansible_os_family == 'RedHat'
   tags: [fail2ban]
 
- - name: join ignore ip lists
-   set_fact:
-     _ips_to_update: "{{ fail2ban_config_ignoreip|union(fail2ban_config_ignoreip_add) }}"
-
 - name: update configuration file - /etc/fail2ban/fail2ban.conf
   template:
     src: etc/fail2ban/fail2ban.conf.j2
