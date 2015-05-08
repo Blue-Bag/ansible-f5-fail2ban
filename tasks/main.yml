@@ -12,7 +12,7 @@
 
 - name: update configuration file - /etc/fail2ban/fail2ban.conf
   template:
-    src: etc/fail2ban/fail2ban.conf.j2
+    src: fail2ban.conf.j2
     dest: /etc/fail2ban/fail2ban.conf
     owner: root
     group: root
@@ -42,6 +42,10 @@
   tags: [fail2ban]
   notify:
    - restart fail2ban
+
+- name: fail2Ban | Touch exim reject log - needs to exist
+  file: path=/var/log/exim4/rejectlog state=touch owner=Debian-exim group=adm mode=0640
+  when: fail2ban_config_jail_exim_enabled == True
 
 - name: start/stop fail2ban service
   service: name=fail2ban state={{ fail2ban_service_state }} enabled={{ fail2ban_service_enabled }}

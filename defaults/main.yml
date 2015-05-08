@@ -3,10 +3,10 @@
 fail2ban_service_enabled: yes
 
 # Allowed setting are: started, stopped
-fail2ban_service_state: started
+fail2ban_service_state: 'started'
 
 # Allowed setting are: installed, latest
-fail2ban_pkg_state: installed
+fail2ban_pkg_state: 'installed'
 
 # "ignoreip" can be a single IP address, a CIDR mask or a DNS host or a list of IP addresses (see readme)
 fail2ban_config_ignoreip:
