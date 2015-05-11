@@ -29,7 +29,21 @@ or just set them in vars (e.g. Whitelist the Newrelic ips)
       - "54.251.34.67"
       - "184.73.237.85"
 
+Note:
+Got an error in startup of fail2ban: No 'host' group in '# Option: ignoreregex'
+due to indentation of lines!! make sure all comments have no indentation!!
 
+e.g.
+
+   # Option: ignoreregex
+   # Notes.: regex to ignore. If this regex matches, the line is ignored.
+   # Values: TEXT
+   ignoreregex =
+should have been
+# Option: ignoreregex
+# Notes.: regex to ignore. If this regex matches, the line is ignored.
+# Values: TEXT
+ignoreregex =
 
 License
 -------
