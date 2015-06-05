@@ -4,7 +4,7 @@ Install and configure Fail2Ban.
 
 Role Variables
 --------------------
-
+See deafult.yml for commented vars.
 
 Usage
 ---------
