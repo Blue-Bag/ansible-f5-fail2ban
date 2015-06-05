@@ -56,7 +56,10 @@ refs:
  - http://www.pontikis.net/blog/fail2ban-install-config-debian-wheezy
  - http://serverfault.com/questions/415040/permanent-block-of-ip-after-n-retries-using-fail2ban
  - http://stuffphilwrites.com/2013/03/permanently-ban-repeat-offenders-fail2ban/
-
+Testing:
+http://www.the-art-of-web.com/system/fail2ban-howto/
 see Galaxy roles:
  - https://github.com/resmo/ansible-role-fail2ban
  - https://github.com/Oefenweb/ansible-fail2ban
+
+ Could install from source: https://extremeshok.com/1759/centos-6-rhel-6-install-the-latest-fail2ban-from-source/
