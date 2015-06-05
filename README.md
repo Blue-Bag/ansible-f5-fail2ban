@@ -1,5 +1,5 @@
 
-Fail2 Ban Role
+Fail2Ban Role
 ==============
 Install and configure Fail2Ban.
 
