@@ -1,3 +1,4 @@
+
 Fail2 Ban Role
 ==============
 Install and configure Fail2Ban.
@@ -35,15 +36,18 @@ due to indentation of lines!! make sure all comments have no indentation!!
 
 e.g.
 
-   # Option: ignoreregex
-   # Notes.: regex to ignore. If this regex matches, the line is ignored.
-   # Values: TEXT
-   ignoreregex =
-should have been
-# Option: ignoreregex
-# Notes.: regex to ignore. If this regex matches, the line is ignored.
-# Values: TEXT
-ignoreregex =
+
+
+     # Option: ignoreregex
+       # Notes.: regex to ignore. If this regex matches, the line is ignored.
+       # Values: TEXT
+       ignoreregex =
+   should have been (no indentation)
+
+    # Option: ignoreregex
+    # Notes.: regex to ignore. If this regex matches, the line is ignored.
+    # Values: TEXT
+    ignoreregex =
 
 License
 -------
@@ -58,7 +62,7 @@ refs:
  - http://stuffphilwrites.com/2013/03/permanently-ban-repeat-offenders-fail2ban/
 Testing:
 http://www.the-art-of-web.com/system/fail2ban-howto/
-see Galaxy roles:
+see other Galaxy roles:
  - https://github.com/resmo/ansible-role-fail2ban
  - https://github.com/Oefenweb/ansible-fail2ban
 
