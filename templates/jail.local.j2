@@ -1,8 +1,8 @@
 # {{ ansible_managed }}
 
 [DEFAULT]
-bantime   =  {{ fail2ban_config_bantime }}
-destemail = {{ fail2ban_config_destemail }}
+bantime   = {{ fail2ban_config_bantime }}
+destemail = {{ fail2ban_config_destemail | default('root')}}
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
 maxretry  = {{ fail2ban_config_maxretry }}
@@ -14,7 +14,7 @@ ignoreip = {{ fail2ban_config_ignoreip | join(" ") }}
 enabled   = {{ fail2ban_config_jail_ssh_enabled }}
 port      = ssh
 filter    = sshd
-logpath   = /var/log/auth.log
+logpath   = {{ fail2ban_authlog }}
 maxretry  = {{ fail2ban_config_maxretry }}
 
 [pam-generic]
@@ -25,7 +25,7 @@ banaction = {{ fail2ban_config_banaction }}
 enabled   = {{ fail2ban_config_jail_sshddos_enabled }}
 port      = ssh
 filter    = sshd-ddos
-logpath   = /var/log/auth.log
+logpath   = {{ fail2ban_authlog }}
 
 [webmin]
 enabled   = {{ fail2ban_config_jail_webmin_enabled }}
@@ -33,11 +33,15 @@ port      = 10000,20000
 filter    = webmin-auth
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/auth.log
+logpath   = {{ fail2ban_authlog }}
 
 
 [apache]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
+port     = http,https
+filter   = apache-auth
+logpath  = /var/log/{{ apache_daemon }}*/**error*
+maxretry = 6
 
 [apache-noscript]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
@@ -54,7 +58,7 @@ port      = http,https
 filter    = apache-badbots
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/apache*/*access.log
+logpath   = /var/log/{{ apache_daemon }}*/**access*
 maxretry  = 1
 
 [apache-nohome]
@@ -63,14 +67,14 @@ port      = http,https
 filter    = apache-nohome
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/apache*/*access.log
+logpath   = /var/log/{{ apache_daemon }}*/**access*
 maxretry  = 1
 
 [php-url-fopen]
 enabled   = {{ fail2ban_config_jail_php_enabled }}
 port      = http,https
 filter    = php-url-fopen
-logpath   = /var/log/apache*/*access.log
+logpath   = /var/log/{{ apache_daemon }}*/**access*
 maxretry  = 1
 
 [exim]
@@ -86,7 +90,7 @@ port      = http,https
 filter    = apache-w00tw00t
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/apache*/*error.log
+logpath   = /var/log/{{ apache_daemon }}*/**error*
 maxretry  = 1
 
 [apache-myadmin]
@@ -95,7 +99,7 @@ port      = http,https
 filter    = apache-myadmin
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/apache*/*error.log
+logpath   = /var/log/{{ apache_daemon }}*/**error*
 maxretry  = 2
 
 [proftpd]
