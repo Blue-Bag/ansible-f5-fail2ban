@@ -1,7 +1,7 @@
 ---
 
 - name: restart fail2ban
-  service: name=fail2ban state=restarted
+  service: name=fail2ban state=restarted sudo=true
 
 - name: reload fail2ban
-  service: name=fail2ban state=reloaded
+  service: name=fail2ban state=reloaded sudo=true

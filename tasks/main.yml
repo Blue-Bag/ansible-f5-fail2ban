@@ -1,13 +1,19 @@
 ---
 
+# Include variables and define needed variables.
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
 - name: install fail2ban for Debian
   apt: pkg=fail2ban state={{ fail2ban_pkg_state }}
   when: ansible_os_family == 'Debian'
+  sudo: true
   tags: [fail2ban]
 
 - name: install fail2ban for RedHat
   yum: name=fail2ban state={{ fail2ban_pkg_state }}
   when: ansible_os_family == 'RedHat'
+  sudo: true
   tags: [fail2ban]
 
 - name: update configuration file - /etc/fail2ban/fail2ban.conf
@@ -17,11 +23,13 @@
     owner: root
     group: root
     mode: 0644
+  sudo: true
   notify: restart fail2ban
   tags: [configuration, fail2ban, fail2ban-configuration]
 
 - name: Fail2ban | Add fail2ban jails
   template: src=jail.local.j2 dest=/etc/fail2ban/jail.local backup=yes mode=0644
+  sudo: true
   tags: [fail2ban]
   notify:
     - restart fail2ban
@@ -31,6 +39,7 @@
   with_items:
     - apache-myadmin.conf
     - apache-w00tw00t.conf
+  sudo: true
   tags: [fail2ban]
 
 - name: Fail2ban | Ensure fail2Ban restarts after system restart
@@ -39,14 +48,24 @@
             regexp='FAIL2BAN_OPTS='
             line='FAIL2BAN_OPTS="-x"'
             state=present
+  sudo: true
+  when: ansible_os_family == 'Debian'
   tags: [fail2ban]
   notify:
    - restart fail2ban
 
+- name: fail2ban | Check for Exim4 log
+  stat: path=/var/log/exim4/rejectlog
+  sudo: true
+  register: exim4_rejectlog
+
+
 - name: fail2Ban | Touch exim reject log - needs to exist
   file: path=/var/log/exim4/rejectlog state=touch owner=Debian-exim group=adm mode=0640
-  when: fail2ban_config_jail_exim_enabled == True
+  sudo: true
+  when: fail2ban_config_jail_exim_enabled == True and exim4_rejectlog.stat.exists == true
 
 - name: start/stop fail2ban service
   service: name=fail2ban state={{ fail2ban_service_state }} enabled={{ fail2ban_service_enabled }}
+  sudo: true
   tags: service
