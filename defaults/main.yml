@@ -45,10 +45,10 @@ fail2ban_config_jail_ssh_enabled: true
 fail2ban_config_jail_sshddos_enabled: true
 fail2ban_config_jail_webmin_enabled: true
 fail2ban_config_jail_apache_enabled: true
-fail2ban_config_jail_exim_enabled: true
+fail2ban_config_jail_exim_enabled: false
 fail2ban_config_jail_pamgeneric_enabled: true
 fail2ban_config_jail_php_enabled: true
-fail2ban_config_jail_ftp_enabled: true
+fail2ban_config_jail_ftp_enabled: false
 
 # updated from https://github.com/Oefenweb/ansible-fail2ban
 # defaults file for fail2ban
@@ -58,6 +58,8 @@ fail2ban_syslog_target: /var/log/fail2ban.log
 fail2ban_syslog_facility: 1
 fail2ban_socket: /var/run/fail2ban/fail2ban.sock
 fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
+
+fail2ban_authlog: /var/log/auth.log
 
 
 fail2ban_backend: auto
