@@ -34,6 +34,11 @@ Note:
 Got an error in startup of fail2ban: No 'host' group in '# Option: ignoreregex'
 due to indentation of lines!! make sure all comments have no indentation!!
 
+If you are monitoring a service like exim4 or proftp - their logs have to exist
+If they don't then the startup will fail.
+There is a check in the task to touch the exim4 reject log since that is not always
+present even if exim4 is running.
+
 e.g.
 
 
