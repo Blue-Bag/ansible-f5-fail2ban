@@ -27,6 +27,14 @@ port      = ssh
 filter    = sshd-ddos
 logpath   = {{ fail2ban_authlog }}
 
+[ssh-route]
+enabled = {{ fail2ban_config_jail_sshroute_enabled }}
+filter = sshd
+action = route
+logpath = /var/log/sshd.log
+maxretry = 6
+
+
 [webmin]
 enabled   = {{ fail2ban_config_jail_webmin_enabled }}
 port      = 10000,20000
@@ -40,7 +48,7 @@ logpath   = {{ fail2ban_authlog }}
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
 port     = http,https
 filter   = apache-auth
-logpath  = /var/log/{{ apache_daemon }}*/**error*
+logpath  = /var/log/{{ apache_daemon }}*/*error.log
 maxretry = 6
 
 [apache-noscript]
@@ -48,9 +56,18 @@ enabled   = {{ fail2ban_config_jail_apache_enabled }}
 port      = http,https
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
+logpath  = /var/log/{{ apache_daemon }}*/*error.log
 
 [apache-overflows]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
+logpath  = /var/log/{{ apache_daemon }}*/*error.log
+
+[apache-modsecurity]
+enabled  = {{ fail2ban_config_jail_modsec_enabled }}
+filter   = apache-modsecurity
+port     = http,https
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
 
 [apache-badbots]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
@@ -58,7 +75,7 @@ port      = http,https
 filter    = apache-badbots
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/{{ apache_daemon }}*/**access*
+logpath   = /var/log/{{ apache_daemon }}*/*access.log
 maxretry  = 1
 
 [apache-nohome]
@@ -67,14 +84,14 @@ port      = http,https
 filter    = apache-nohome
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/{{ apache_daemon }}*/**access*
+logpath   = /var/log/{{ apache_daemon }}*/*access.log
 maxretry  = 1
 
 [php-url-fopen]
 enabled   = {{ fail2ban_config_jail_php_enabled }}
 port      = http,https
 filter    = php-url-fopen
-logpath   = /var/log/{{ apache_daemon }}*/**access*
+logpath   = /var/log/{{ apache_daemon }}*/*access.log
 maxretry  = 1
 
 [exim]
@@ -90,7 +107,7 @@ port      = http,https
 filter    = apache-w00tw00t
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/{{ apache_daemon }}*/**error*
+logpath   = /var/log/{{ apache_daemon }}*/*error.log
 maxretry  = 1
 
 [apache-myadmin]
@@ -99,7 +116,7 @@ port      = http,https
 filter    = apache-myadmin
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
-logpath   = /var/log/{{ apache_daemon }}*/**error*
+logpath   = /var/log/{{ apache_daemon }}*/*error.log
 maxretry  = 2
 
 [proftpd]
@@ -107,3 +124,19 @@ enabled   = {{ fail2ban_config_jail_ftp_enabled }}
 port      = ftp,ftp-data,ftps,ftps-data
 filter    = proftpd
 logpath   = /var/log/proftpd/proftpd.log
+
+# Jail for more extended banning of persistent abusers
+# !!! WARNING !!!
+#   Make sure that your loglevel specified in fail2ban.conf/.local
+#   is not at DEBUG level -- which might then cause fail2ban to fall into
+#   an infinite loop constantly feeding itself with non-informative lines
+[recidive]
+
+enabled  = {{ fail2ban_config_jail_recidive_enabled }}
+filter   = recidive
+logpath  = /var/log/fail2ban.log
+action   = iptables-allports[name=recidive]
+           sendmail-whois-lines[name=recidive, logpath=/var/log/fail2ban.log]
+bantime  = 604800  ; 1 week
+findtime = 86400   ; 1 day
+maxretry = 5

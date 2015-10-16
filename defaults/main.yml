@@ -42,13 +42,16 @@ fail2ban_config_jailaction: "%(action_mwl)s"
 
 # Jails
 fail2ban_config_jail_ssh_enabled: true
+fail2ban_config_jail_sshroute_enabled: true
 fail2ban_config_jail_sshddos_enabled: true
 fail2ban_config_jail_webmin_enabled: true
 fail2ban_config_jail_apache_enabled: true
+fail2ban_config_jail_modsec_enabled: true
 fail2ban_config_jail_exim_enabled: false
 fail2ban_config_jail_pamgeneric_enabled: true
 fail2ban_config_jail_php_enabled: true
 fail2ban_config_jail_ftp_enabled: false
+fail2ban_config_jail_recidive_enabled: false
 
 # updated from https://github.com/Oefenweb/ansible-fail2ban
 # defaults file for fail2ban
