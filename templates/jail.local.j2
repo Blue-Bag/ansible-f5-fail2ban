@@ -31,7 +31,7 @@ logpath   = {{ fail2ban_authlog }}
 enabled = {{ fail2ban_config_jail_sshroute_enabled }}
 filter = sshd
 action = route
-logpath = /var/log/sshd.log
+logpath = {{ fail2ban_authlog }}
 maxretry = 6
 
 
