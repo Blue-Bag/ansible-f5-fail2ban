@@ -1,10 +1,11 @@
 ---
+dependencies: []
+
 galaxy_info:
   author: George Boobyer
   company: Blue-Bag Ltd
   license: MIT
   min_ansible_version: 1.8
-
   platforms:
   - name: EL
     versions:
@@ -18,4 +19,4 @@ galaxy_info:
   categories:
   - system
 
-dependencies: []
+
