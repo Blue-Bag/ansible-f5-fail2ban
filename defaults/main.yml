@@ -40,6 +40,24 @@ fail2ban_config_banaction: iptables-allports
 
 fail2ban_config_jailaction: "%(action_mwl)s"
 
+# updated from https://github.com/Oefenweb/ansible-fail2ban
+# defaults file for fail2ban
+fail2ban_loglevel: 3
+fail2ban_logtarget: /var/log/fail2ban.log
+fail2ban_syslog_target: /var/log/fail2ban.log
+fail2ban_syslog_facility: 1
+fail2ban_socket: /var/run/fail2ban/fail2ban.sock
+fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
+
+fail2ban_authlog: /var/log/auth.log
+fail2ban_daemonlog: /var/log/daemon.log
+
+fail2ban_backend: auto
+
+fail2ban_mta: sendmail
+fail2ban_protocol: tcp
+fail2ban_chain: INPUT
+
 # Jails
 fail2ban_config_jail_ssh_enabled: true
 fail2ban_config_jail_sshroute_enabled: true
@@ -52,21 +70,10 @@ fail2ban_config_jail_pamgeneric_enabled: true
 fail2ban_config_jail_php_enabled: true
 fail2ban_config_jail_ftp_enabled: false
 fail2ban_config_jail_recidive_enabled: false
-
-# updated from https://github.com/Oefenweb/ansible-fail2ban
-# defaults file for fail2ban
-fail2ban_loglevel: 3
-fail2ban_logtarget: /var/log/fail2ban.log
-fail2ban_syslog_target: /var/log/fail2ban.log
-fail2ban_syslog_facility: 1
-fail2ban_socket: /var/run/fail2ban/fail2ban.sock
-fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
-
-fail2ban_authlog: /var/log/auth.log
+fail2ban_config_jail_drupalauth_enabled: false
+fail2ban_config_jail_monit_enabled: false
 
 
-fail2ban_backend: auto
-
-fail2ban_mta: sendmail
-fail2ban_protocol: tcp
-fail2ban_chain: INPUT
+# some defaults for custom jails
+monit_webinterface_port: 2812
+webmin_port: 10000

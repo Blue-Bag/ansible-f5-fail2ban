@@ -1,0 +1,28 @@
+---
+# WE have som ejilas from the 0.9 version
+# and some custom filters so we need to upload these.
+# I plan to change this to a fact based list of filters but for now
+# we will simply do it long hand for the ones we know
+# fail2ban 0.9 support many more so we will update this when
+# we support that.
+
+
+- name: Fail2ban | Add fail2ban filters
+  copy: src={{ item }} dest=/etc/fail2ban/filter.d/{{ item }}
+  with_items:
+    - apache-myadmin.conf
+    - apache-w00tw00t.conf
+  sudo: true
+  tags: [fail2ban]
+
+- name: Fail2ban | Add drupal fail2ban filter
+  copy: src=drupal-auth.conf dest=/etc/fail2ban/filter.d/drupal-auth.conf
+  when: fail2ban_config_jail_drupalauth_enabled
+  sudo: true
+  tags: [fail2ban]
+
+- name: Fail2ban | Add monit fail2ban filter
+  copy: src=monit.conf dest=/etc/fail2ban/filter.d/monit.conf
+  when: fail2ban_config_jail_monit_enabled
+  sudo: true
+  tags: [fail2ban]

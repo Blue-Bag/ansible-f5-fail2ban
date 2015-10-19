@@ -140,3 +140,25 @@ action   = iptables-allports[name=recidive]
 bantime  = 604800  ; 1 week
 findtime = 86400   ; 1 day
 maxretry = 5
+
+#
+# Web Applications
+#
+#
+
+[drupal-auth]
+# requires syslog
+enabled  = {{ fail2ban_config_jail_drupalauth_enabled }}
+filter = drupal-auth
+port     = http,https
+logpath  = {{ fail2ban_daemonlog }}
+
+
+[monit]
+#Ban clients brute-forcing the monit gui login
+enabled  = {{ fail2ban_config_jail_monit_enabled }}
+filter   = monit
+port = {{ monit_webinterface_port }}
+logpath  = /var/log/monit.log
+
+
