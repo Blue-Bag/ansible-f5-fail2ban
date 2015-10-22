@@ -17,7 +17,7 @@ fail2ban_config_ignoreip:
 # -1 = permanent
 fail2ban_config_bantime: 86400
 fail2ban_config_maxretry: 3
-fail2ban_config_destemail: ""
+fail2ban_config_destemail: "root"
 
 # select ban option on specified ports or all ports
 fail2ban_config_banaction: iptables-allports
@@ -38,7 +38,7 @@ fail2ban_config_banaction: iptables-allports
 # to the destemail.
 # "%(action_xarf)s"
 
-fail2ban_config_jailaction: "%(action_mwl)s"
+fail2ban_config_jailaction: "%(action_)s"
 
 # updated from https://github.com/Oefenweb/ansible-fail2ban
 # defaults file for fail2ban
@@ -62,9 +62,9 @@ fail2ban_chain: INPUT
 fail2ban_config_jail_ssh_enabled: true
 fail2ban_config_jail_sshroute_enabled: true
 fail2ban_config_jail_sshddos_enabled: true
-fail2ban_config_jail_webmin_enabled: true
-fail2ban_config_jail_apache_enabled: true
-fail2ban_config_jail_modsec_enabled: true
+fail2ban_config_jail_webmin_enabled: false
+fail2ban_config_jail_apache_enabled: false
+fail2ban_config_jail_modsec_enabled: false
 fail2ban_config_jail_exim_enabled: false
 fail2ban_config_jail_pamgeneric_enabled: true
 fail2ban_config_jail_php_enabled: true
