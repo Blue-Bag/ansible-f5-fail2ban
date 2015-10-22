@@ -49,16 +49,9 @@
   notify:
    - restart fail2ban
 
-- name: fail2ban | Check for Exim4 log
-  stat: path=/var/log/exim4/rejectlog
-  sudo: true
-  register: exim4_rejectlog
+# check for the presence of  logs for the jails
+- include: touch_logs.yml
 
-
-- name: fail2Ban | Touch exim reject log - needs to exist
-  file: path=/var/log/exim4/rejectlog state=touch owner=Debian-exim group=adm mode=0640
-  sudo: true
-  when: fail2ban_config_jail_exim_enabled == True and exim4_rejectlog.stat.exists == false
 
 - name: start/stop fail2ban service
   service: name=fail2ban state={{ fail2ban_service_state }} enabled={{ fail2ban_service_enabled }}
