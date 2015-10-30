@@ -77,3 +77,6 @@ fail2ban_config_jail_monit_enabled: false
 # some defaults for custom jails
 monit_webinterface_port: 2812
 webmin_port: 10000
+
+fail2ban_badip_action: False
+#badips_key: ''
