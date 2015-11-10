@@ -73,10 +73,24 @@ fail2ban_config_jail_recidive_enabled: false
 fail2ban_config_jail_drupalauth_enabled: false
 fail2ban_config_jail_monit_enabled: false
 
+fail2ban_badips_jails:
+  - ssh
+  - sshroute
+  - sshddos
+  - webmin
+  - exim
+  - pamgeneric
+  - ftp
+  - monit
+ # due to fasle positives these may be best excluded
+  # - apache
+  # - modsec
+  # - php
+  # - drupalauth
 
 # some defaults for custom jails
 monit_webinterface_port: 2812
 webmin_port: 10000
 
-fail2ban_badip_action: False
+fail2ban_badips_action: False
 #badips_key: ''
