@@ -2,7 +2,7 @@
 
 [DEFAULT]
 bantime   = {{ fail2ban_config_bantime }}
-destemail = {{ fail2ban_config_destemail | default('root')}}
+destemail = {{ fail2ban_config_destemail | join(",") | default('root')}}
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
 maxretry  = {{ fail2ban_config_maxretry }}
