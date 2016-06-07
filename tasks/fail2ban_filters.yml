@@ -12,17 +12,17 @@
   with_items:
     - apache-myadmin.conf
     - apache-w00tw00t.conf
-  sudo: true
+  become: true
   tags: [fail2ban]
 
 - name: Fail2ban | Add drupal fail2ban filter
   copy: src=drupal-auth.conf dest=/etc/fail2ban/filter.d/drupal-auth.conf
   when: fail2ban_config_jail_drupalauth_enabled
-  sudo: true
+  become: true
   tags: [fail2ban]
 
 - name: Fail2ban | Add monit fail2ban filter
   copy: src=monit.conf dest=/etc/fail2ban/filter.d/monit.conf
   when: fail2ban_config_jail_monit_enabled
-  sudo: true
+  become: true
   tags: [fail2ban]

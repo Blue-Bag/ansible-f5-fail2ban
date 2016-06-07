@@ -2,23 +2,23 @@
 
 - name: fail2ban | Check for Fail2ban log
   stat: path=/var/log/fail2ban.log
-  sudo: true
+  become: true
   register: fail2ban_log
   when: fail2ban_config_jail_recidive_enabled == True
 
 - name: fail2Ban | Touch fail2ban log - needs to exist
   file: path=/var/log/fail2ban.log state=touch owner=root group=adm mode=0640
-  sudo: true
+  become: true
   when: fail2ban_config_jail_recidive_enabled == True and fail2ban_log.stat.exists == false
 
 - name: fail2ban | Check for Exim4 log
   stat: path=/var/log/exim4/rejectlog
-  sudo: true
+  become: true
   register: exim4_rejectlog
   when: fail2ban_config_jail_exim_enabled == True
 
 
 - name: fail2Ban | Touch exim reject log - needs to exist
   file: path=/var/log/exim4/rejectlog state=touch owner=Debian-exim group=adm mode=0640
-  sudo: true
+  become: true
   when: fail2ban_config_jail_exim_enabled == True and exim4_rejectlog.stat.exists == false
