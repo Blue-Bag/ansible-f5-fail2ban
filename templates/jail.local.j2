@@ -225,4 +225,12 @@ action    = {{ fail2ban_config_jailaction }}
              badips[category="monit", key="{{ badips_key}}"]
 {% endif %}
 
-
+[apache-dosevasive]
+enabled = {{ fail2ban_config_jail_apacheddos_enabled }}
+filter  = apache-dosevasive
+port     = http,https
+action = {{ fail2ban_config_jailaction }}
+#action = iptables-allports[name=dos]
+logpath = /var/log/{{ apache_daemon }}*/*error.log
+bantime = 240
+maxretry = 10

@@ -12,6 +12,7 @@
   with_items:
     - apache-myadmin.conf
     - apache-w00tw00t.conf
+    - apache-dosevasive.conf
   become: true
   tags: [fail2ban]
 
@@ -26,3 +27,4 @@
   when: fail2ban_config_jail_monit_enabled
   become: true
   tags: [fail2ban]
+
