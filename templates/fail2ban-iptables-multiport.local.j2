@@ -1,0 +1,11 @@
+[Definition]
+
+# Option:  actionstart
+# Notes.:  command executed once at the start of Fail2Ban.
+# Values:  CMD
+#
+actionstart = iptables -N fail2ban-<name>
+              iptables -A fail2ban-<name> -j RETURN
+              iptables -I <chain> {{ fail2ban_rule_startindex  if fail2ban_rule_startindex > 1 }} -p <protocol> -m multiport --dports <port> -j fail2ban-<name>
+
+

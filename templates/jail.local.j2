@@ -6,6 +6,7 @@ destemail = {{ fail2ban_config_destemail | join(",") | default('root')}}
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
 maxretry  = {{ fail2ban_config_maxretry }}
+findtime  = {{ fail2ban_config_findtime }}
 
 ignoreip = {{ fail2ban_config_ignoreip | join(" ") }}
 
@@ -234,3 +235,23 @@ action = {{ fail2ban_config_jailaction }}
 logpath = /var/log/{{ apache_daemon }}*/*error.log
 bantime = 240
 maxretry = 10
+
+[apache-cmsnoway]
+enabled = {{ fail2ban_config_jail_apache_cmsnoway_enabled }}
+filter  = apache-cmsnoway
+port     = http,https
+action = {{ fail2ban_config_jailaction }}
+logpath = /var/log/{{ apache_daemon }}*/*access.log
+bantime = -1
+maxretry = 1
+
+[drupal-register]
+enabled   = {{ fail2ban_config_jail_drupal_register_enabled }}
+port      = http,https
+filter    = drupal-register
+banaction = iptables-allports
+action    = %(action_mwl)s
+logpath   = /var/log/apache2*/*access.log
+maxretry  = 3
+bantime   = -1
+

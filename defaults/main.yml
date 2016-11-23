@@ -16,6 +16,7 @@ fail2ban_config_ignoreip:
 # 24 hours = 3600*24 = 86400
 # -1 = permanent
 fail2ban_config_bantime: 86400
+fail2ban_config_findtime: 600
 fail2ban_config_maxretry: 3
 fail2ban_config_destemail: "root"
 
@@ -72,6 +73,8 @@ fail2ban_config_jail_ftp_enabled: false
 fail2ban_config_jail_recidive_enabled: false
 fail2ban_config_jail_drupalauth_enabled: false
 fail2ban_config_jail_monit_enabled: false
+fail2ban_config_jail_apacheddos_enabled: true
+fail2ban_config_jail_apache_cmsnoway_enabled: false
 
 fail2ban_badips_jails:
   - ssh

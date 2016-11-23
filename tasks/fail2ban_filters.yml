@@ -13,6 +13,8 @@
     - apache-myadmin.conf
     - apache-w00tw00t.conf
     - apache-dosevasive.conf
+    - apache-cmsnoway.conf
+    - drupal-register.conf
   become: true
   tags: [fail2ban]
 
