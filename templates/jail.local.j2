@@ -2,10 +2,11 @@
 
 [DEFAULT]
 bantime   = {{ fail2ban_config_bantime }}
-destemail = {{ fail2ban_config_destemail | default('root')}}
+destemail = {{ fail2ban_config_destemail | join(",") | default('root')}}
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
 maxretry  = {{ fail2ban_config_maxretry }}
+findtime  = {{ fail2ban_config_findtime }}
 
 ignoreip = {{ fail2ban_config_ignoreip | join(" ") }}
 
@@ -16,6 +17,10 @@ port      = ssh
 filter    = sshd
 logpath   = {{ fail2ban_authlog }}
 maxretry  = {{ fail2ban_config_maxretry }}
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'ssh' in firewall_badips_jails %}
+             badips[category="ssh", key="{{ badips_key}}"]
+{% endif %}
 
 [pam-generic]
 enabled   = {{ fail2ban_config_jail_pamgeneric_enabled }}
@@ -26,6 +31,10 @@ enabled   = {{ fail2ban_config_jail_sshddos_enabled }}
 port      = ssh
 filter    = sshd-ddos
 logpath   = {{ fail2ban_authlog }}
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'sshddos' in firewall_badips_jails %}
+             badips[category="sshddos", key="{{ badips_key}}"]
+{% endif %}
 
 [ssh-route]
 enabled = {{ fail2ban_config_jail_sshroute_enabled }}
@@ -33,6 +42,10 @@ filter = sshd
 action = route
 logpath = {{ fail2ban_authlog }}
 maxretry = 6
+action    = route
+{% if fail2ban_badips_action and 'sshroute' in firewall_badips_jails %}
+             badips[category="ssh", key="{{ badips_key}}"]
+{% endif %}
 
 
 [webmin]
@@ -40,9 +53,11 @@ enabled   = {{ fail2ban_config_jail_webmin_enabled }}
 port      = 10000,20000
 filter    = webmin-auth
 banaction = {{ fail2ban_config_banaction }}
-action    = {{ fail2ban_config_jailaction }}
 logpath   = {{ fail2ban_authlog }}
-
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'webmin' in firewall_badips_jails %}
+             badips[category="webmin", key="{{ badips_key}}"]
+{% endif %}
 
 [apache]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
@@ -50,24 +65,39 @@ port     = http,https
 filter   = apache-auth
 logpath  = /var/log/{{ apache_daemon }}*/*error.log
 maxretry = 6
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'apache' in firewall_badips_jails %}
+             badips[category="apache", key="{{ badips_key}}"]
+{% endif %}
 
 [apache-noscript]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
 port      = http,https
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'apache' in firewall_badips_jails %}
+             badips[category="apache", key="{{ badips_key}}"]
+{% endif %}
 logpath  = /var/log/{{ apache_daemon }}*/*error.log
 
 [apache-overflows]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
 logpath  = /var/log/{{ apache_daemon }}*/*error.log
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'apache' in firewall_badips_jails %}
+             badips[category="apache", key="{{ badips_key}}"]
+{% endif %}
 
 [apache-modsecurity]
 enabled  = {{ fail2ban_config_jail_modsec_enabled }}
 filter   = apache-modsecurity
 port     = http,https
-logpath  = /var/log/apache*/*error.log
+logpath  = /var/log/{{ apache_daemon }}*/*error.log
 maxretry = 2
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'modsec' in firewall_badips_jails %}
+             badips[category="modsecurity", key="{{ badips_key}}"]
+{% endif %}
 
 [apache-badbots]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
@@ -75,6 +105,9 @@ port      = http,https
 filter    = apache-badbots
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'apache' in firewall_badips_jails %}
+             badips[category="badbots", key="{{ badips_key}}"]
+{% endif %}
 logpath   = /var/log/{{ apache_daemon }}*/*access.log
 maxretry  = 1
 
@@ -84,6 +117,9 @@ port      = http,https
 filter    = apache-nohome
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'apache' in firewall_badips_jails %}
+             badips[category="apache", key="{{ badips_key}}"]
+{% endif %}
 logpath   = /var/log/{{ apache_daemon }}*/*access.log
 maxretry  = 1
 
@@ -93,6 +129,10 @@ port      = http,https
 filter    = php-url-fopen
 logpath   = /var/log/{{ apache_daemon }}*/*access.log
 maxretry  = 1
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'php' in firewall_badips_jails %}
+             badips[category="php", key="{{ badips_key}}"]
+{% endif %}
 
 [exim]
 enabled  = {{ fail2ban_config_jail_exim_enabled }}
@@ -100,6 +140,10 @@ filter   = exim
 port     = smtp,ssmtp
 logpath  = /var/log/exim*/rejectlog
 maxretry = 1
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'exim' in firewall_badips_jails %}
+             badips[category="mail", key="{{ badips_key}}"]
+{% endif %}
 
 [apache-w00tw00t]
 enabled   = {{ fail2ban_config_jail_apache_enabled }}
@@ -107,6 +151,9 @@ port      = http,https
 filter    = apache-w00tw00t
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'apache' in firewall_badips_jails %}
+             badips[category="apache-w00tw00t", key="{{ badips_key}}"]
+{% endif %}
 logpath   = /var/log/{{ apache_daemon }}*/*error.log
 maxretry  = 1
 
@@ -116,6 +163,9 @@ port      = http,https
 filter    = apache-myadmin
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'apache' in firewall_badips_jails %}
+             badips[category="apache", key="{{ badips_key}}"]
+{% endif %}
 logpath   = /var/log/{{ apache_daemon }}*/*error.log
 maxretry  = 2
 
@@ -124,6 +174,10 @@ enabled   = {{ fail2ban_config_jail_ftp_enabled }}
 port      = ftp,ftp-data,ftps,ftps-data
 filter    = proftpd
 logpath   = /var/log/proftpd/proftpd.log
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'ftp' in firewall_badips_jails %}
+             badips[category="ftp", key="{{ badips_key}}"]
+{% endif %}
 
 # Jail for more extended banning of persistent abusers
 # !!! WARNING !!!
@@ -137,6 +191,9 @@ filter   = recidive
 logpath  = /var/log/fail2ban.log
 action   = iptables-allports[name=recidive]
            sendmail-whois-lines[name=recidive, logpath=/var/log/fail2ban.log]
+{% if fail2ban_badips_action %}
+           badips[category="ssh", key="{{ badips_key}}"]
+{% endif %}
 bantime  = 604800  ; 1 week
 findtime = 86400   ; 1 day
 maxretry = 5
@@ -152,6 +209,10 @@ enabled  = {{ fail2ban_config_jail_drupalauth_enabled }}
 filter = drupal-auth
 port     = http,https
 logpath  = {{ fail2ban_daemonlog }}
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'drupalauth' in firewall_badips_jails %}
+             badips[category="drupal", key="{{ badips_key}}"]
+{% endif %}
 
 
 [monit]
@@ -160,5 +221,37 @@ enabled  = {{ fail2ban_config_jail_monit_enabled }}
 filter   = monit
 port = {{ monit_webinterface_port }}
 logpath  = /var/log/monit.log
+action    = {{ fail2ban_config_jailaction }}
+{% if fail2ban_badips_action and 'monit' in firewall_badips_jails%}
+             badips[category="monit", key="{{ badips_key}}"]
+{% endif %}
 
+[apache-dosevasive]
+enabled = {{ fail2ban_config_jail_apacheddos_enabled }}
+filter  = apache-dosevasive
+port     = http,https
+action = {{ fail2ban_config_jailaction }}
+#action = iptables-allports[name=dos]
+logpath = /var/log/{{ apache_daemon }}*/*error.log
+bantime = 240
+maxretry = 10
+
+[apache-cmsnoway]
+enabled = {{ fail2ban_config_jail_apache_cmsnoway_enabled }}
+filter  = apache-cmsnoway
+port     = http,https
+action = {{ fail2ban_config_jailaction }}
+logpath = /var/log/{{ apache_daemon }}*/*access.log
+bantime = -1
+maxretry = 1
+
+[drupal-register]
+enabled   = {{ fail2ban_config_jail_drupal_register_enabled }}
+port      = http,https
+filter    = drupal-register
+banaction = iptables-allports
+action    = %(action_mwl)s
+logpath   = /var/log/apache2*/*access.log
+maxretry  = 3
+bantime   = -1
 

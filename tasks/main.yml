@@ -7,13 +7,13 @@
 - name: install fail2ban for Debian
   apt: pkg=fail2ban state={{ fail2ban_pkg_state }}
   when: ansible_os_family == 'Debian'
-  sudo: true
+  become: true
   tags: [fail2ban]
 
 - name: install fail2ban for RedHat
   yum: name=fail2ban state={{ fail2ban_pkg_state }}
   when: ansible_os_family == 'RedHat'
-  sudo: true
+  become: true
   tags: [fail2ban]
 
 - name: update configuration file - /etc/fail2ban/fail2ban.conf
@@ -23,7 +23,31 @@
     owner: root
     group: root
     mode: 0644
-  sudo: true
+  become: true
+  notify: restart fail2ban
+  tags: [configuration, fail2ban, fail2ban-configuration]
+
+- name: update configuration file - /etc/fail2ban/fail2ban.conf
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  with_items:
+    - {
+      src: 'fail2ban.conf.j2',
+      dest: '/etc/fail2ban/fail2ban.conf'
+   }
+    - {
+      src: 'fail2ban-iptables-actionstart.local.j2',
+      dest: '/etc/fail2ban/action.d/iptables-multiport.local'
+    }
+    - {
+      src: 'fail2ban-iptables-actionstart.local.j2',
+      dest: '/etc/fail2ban/action.d/iptables-allports.local'
+    }
   notify: restart fail2ban
   tags: [configuration, fail2ban, fail2ban-configuration]
 
@@ -32,7 +56,7 @@
 
 - name: Fail2ban | Add fail2ban jails
   template: src=jail.local.j2 dest=/etc/fail2ban/jail.local backup=yes mode=0644
-  sudo: true
+  become: true
   tags: [fail2ban]
   notify:
     - restart fail2ban
@@ -43,7 +67,7 @@
             regexp='FAIL2BAN_OPTS='
             line='FAIL2BAN_OPTS="-x"'
             state=present
-  sudo: true
+  become: true
   when: ansible_os_family == 'Debian'
   tags: [fail2ban]
   notify:
@@ -55,5 +79,5 @@
 
 - name: start/stop fail2ban service
   service: name=fail2ban state={{ fail2ban_service_state }} enabled={{ fail2ban_service_enabled }}
-  sudo: true
+  become: true
   tags: service

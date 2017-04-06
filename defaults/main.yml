@@ -16,6 +16,7 @@ fail2ban_config_ignoreip:
 # 24 hours = 3600*24 = 86400
 # -1 = permanent
 fail2ban_config_bantime: 86400
+fail2ban_config_findtime: 600
 fail2ban_config_maxretry: 3
 fail2ban_config_destemail: "root"
 
@@ -58,6 +59,11 @@ fail2ban_mta: sendmail
 fail2ban_protocol: tcp
 fail2ban_chain: INPUT
 
+# normally fail2ban puts its rule first (insert)
+# You can specify a start index to have it insert after
+# other rules (Ipset blocks for example)
+fail2ban_rule_startindex: 1
+
 # Jails
 fail2ban_config_jail_ssh_enabled: true
 fail2ban_config_jail_sshroute_enabled: true
@@ -72,8 +78,28 @@ fail2ban_config_jail_ftp_enabled: false
 fail2ban_config_jail_recidive_enabled: false
 fail2ban_config_jail_drupalauth_enabled: false
 fail2ban_config_jail_monit_enabled: false
+fail2ban_config_jail_apacheddos_enabled: true
+fail2ban_config_jail_apache_cmsnoway_enabled: false
+fail2ban_config_jail_drupal_register_enabled: false
 
+fail2ban_badips_jails:
+  - ssh
+  - sshroute
+  - sshddos
+  - webmin
+  - exim
+  - pamgeneric
+  - ftp
+  - monit
+ # due to fasle positives these may be best excluded
+  # - apache
+  # - modsec
+  # - php
+  # - drupalauth
 
 # some defaults for custom jails
 monit_webinterface_port: 2812
 webmin_port: 10000
+
+fail2ban_badips_action: False
+#badips_key: ''
