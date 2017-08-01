@@ -42,7 +42,6 @@ filter = sshd
 action = route
 logpath = {{ fail2ban_authlog }}
 maxretry = 6
-action    = route
 {% if fail2ban_badips_action and 'sshroute' in firewall_badips_jails %}
              badips[category="ssh", key="{{ badips_key}}"]
 {% endif %}
