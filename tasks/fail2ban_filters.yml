@@ -15,6 +15,7 @@
     - apache-dosevasive.conf
     - apache-cmsnoway.conf
     - drupal-register.conf
+    - apache-procselfenviron.conf
   become: true
   tags: [fail2ban]
 

@@ -81,6 +81,7 @@ fail2ban_config_jail_monit_enabled: false
 fail2ban_config_jail_apacheddos_enabled: true
 fail2ban_config_jail_apache_cmsnoway_enabled: false
 fail2ban_config_jail_drupal_register_enabled: false
+fail2ban_config_jail_apache_procselfenv_enabled: false
 
 fail2ban_badips_jails:
   - ssh
