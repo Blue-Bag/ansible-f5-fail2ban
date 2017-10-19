@@ -241,7 +241,16 @@ filter  = apache-cmsnoway
 port     = http,https
 action = {{ fail2ban_config_jailaction }}
 logpath = /var/log/{{ apache_daemon }}*/*access.log
-bantime = -1
+#bantime = 86400
+maxretry = 1
+
+[apache-procselfenv]
+enabled = {{ fail2ban_config_jail_procselfenv_enabled }}
+filter  = apache-procselfenv
+port     = http,https
+action = {{ fail2ban_config_jailaction }}
+logpath = /var/log/{{ apache_daemon }}*/*access.log
+#bantime = 86400
 maxretry = 1
 
 [drupal-register]
@@ -250,7 +259,8 @@ port      = http,https
 filter    = drupal-register
 banaction = iptables-allports
 action    = %(action_mwl)s
-logpath   = /var/log/apache2*/*access.log
+logpath   = /var/log/{{ apache_daemon }}*/*access.log
 maxretry  = 3
-bantime   = -1
+#bantime   = -1
+
 
