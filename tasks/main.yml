@@ -52,7 +52,7 @@
   tags: [configuration, fail2ban, fail2ban-configuration]
 
 # determine apache version
-- include: fail2ban_filters.yml
+- import_tasks: fail2ban_filters.yml
 
 - name: Fail2ban | Add fail2ban jails
   template: src=jail.local.j2 dest=/etc/fail2ban/jail.local backup=yes mode=0644
@@ -74,7 +74,7 @@
    - restart fail2ban
 
 # check for the presence of  logs for the jails
-- include: touch_logs.yml
+- import_tasks: touch_logs.yml
 
 
 - name: start/stop fail2ban service
