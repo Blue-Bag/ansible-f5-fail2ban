@@ -41,11 +41,11 @@
       dest: '/etc/fail2ban/fail2ban.conf'
    }
     - {
-      src: 'fail2ban-iptables-actionstart.local.j2',
+      src: 'fail2ban-iptables-multiport.local.j2',
       dest: '/etc/fail2ban/action.d/iptables-multiport.local'
     }
     - {
-      src: 'fail2ban-iptables-actionstart.local.j2',
+      src: 'fail2ban-iptables-allports.local.j2',
       dest: '/etc/fail2ban/action.d/iptables-allports.local'
     }
   notify: restart fail2ban

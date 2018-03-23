@@ -21,7 +21,7 @@ fail2ban_config_maxretry: 3
 fail2ban_config_destemail: "root"
 
 # select ban option on specified ports or all ports
-fail2ban_config_banaction: iptables-allports
+fail2ban_config_banaction: iptables-multiport
 
 # Jail Action:
 # specify the action to take:
@@ -81,7 +81,8 @@ fail2ban_config_jail_monit_enabled: false
 fail2ban_config_jail_apacheddos_enabled: true
 fail2ban_config_jail_apache_cmsnoway_enabled: false
 fail2ban_config_jail_drupal_register_enabled: false
-fail2ban_config_jail_apache_procselfenv_enabled: false
+fail2ban_config_jail_procselfenv_enabled: false
+
 
 fail2ban_badips_jails:
   - ssh
