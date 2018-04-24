@@ -43,6 +43,8 @@ fail2ban_config_jailaction: "%(action_)s"
 
 # updated from https://github.com/Oefenweb/ansible-fail2ban
 # defaults file for fail2ban
+# note that in some versions you need INFO not 3.
+# we could sniff the version and update.
 fail2ban_loglevel: 3
 fail2ban_logtarget: /var/log/fail2ban.log
 fail2ban_syslog_target: /var/log/fail2ban.log
