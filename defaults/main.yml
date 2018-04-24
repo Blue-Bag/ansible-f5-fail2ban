@@ -13,6 +13,9 @@ fail2ban_config_ignoreip:
   - "{{ ansible_ssh_host }}"
   - "127.0.0.1/8"
 
+# version differences - some use 'f2b'
+fail2ban_jail_prefix: 'fail2ban'
+
 # 24 hours = 3600*24 = 86400
 # -1 = permanent
 fail2ban_config_bantime: 86400
