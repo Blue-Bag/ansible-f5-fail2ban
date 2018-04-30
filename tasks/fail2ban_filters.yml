@@ -16,6 +16,7 @@
     - apache-cmsnoway.conf
     - drupal-register.conf
     - apache-procselfenv.conf
+    - drupal-psa-2018-004.conf
   when: fail2ban_config_jail_apache_enabled
   become: true
 
