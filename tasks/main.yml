@@ -27,6 +27,7 @@
   notify: restart fail2ban
   tags: [configuration, fail2ban, fail2ban-configuration]
 
+
 - name: update configuration file - /etc/fail2ban/fail2ban.conf
   template:
     src: "{{ item.src }}"
@@ -48,6 +49,15 @@
       src: 'fail2ban-iptables-allports.local.j2',
       dest: '/etc/fail2ban/action.d/iptables-allports.local'
     }
+    - {
+      src: 'fail2ban-iptables-ipset-proto6-multiport.local.j2',
+      dest: '/etc/fail2ban/action.d/iptables-ipset-proto6.local'
+    }
+    - {
+      src: 'fail2ban-iptables-ipset-proto6-allports.local.j2',
+      dest: '/etc/fail2ban/action.d/iptables-ipset-proto6-allports.local'
+    }
+
   notify: restart fail2ban
   tags: [configuration, fail2ban, fail2ban-configuration]
 
