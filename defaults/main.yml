@@ -1,4 +1,6 @@
 ---
+
+
 # Enable service on boot
 fail2ban_service_enabled: yes
 

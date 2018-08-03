@@ -16,6 +16,8 @@
   become: true
   tags: [fail2ban]
 
+  # check for fail2ban version
+
 - name: update configuration file - /etc/fail2ban/fail2ban.conf
   template:
     src: fail2ban.conf.j2
