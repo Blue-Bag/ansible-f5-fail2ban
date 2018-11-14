@@ -90,7 +90,7 @@ fail2ban_config_jail_apache_cmsnoway_enabled: false
 fail2ban_config_jail_drupal_register_enabled: false
 fail2ban_config_jail_procselfenv_enabled: false
 fail2ban_config_jail_drupal_psa_2018_004_enabled: false
-
+fail2ban_config_jail_sqli_char_attack_enabled: false
 
 fail2ban_badips_jails:
   - ssh

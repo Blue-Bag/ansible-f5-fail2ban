@@ -273,3 +273,15 @@ maxretry  = 1
 destemail = george@blue-bag.com
 bantime   = 604800
 
+
+[sqli-char-attack]
+enabled   = {{ fail2ban_config_jail_sqli_char_attack_enabled }}
+port      = http,https
+filter    = sqli-char-attack
+banaction = iptables-ipset-proto6-allports
+action    = %(action_mwl)s
+logpath   = /var/log/apache2*/*access.log
+maxretry  = 3
+destemail = george@blue-bag.com
+bantime   = 604800
+
