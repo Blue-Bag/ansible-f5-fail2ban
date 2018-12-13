@@ -5,7 +5,9 @@
   include_vars: "{{ ansible_os_family }}.yml"
 
 - name: install fail2ban for Debian
-  apt: pkg=fail2ban state={{ fail2ban_pkg_state }}
+  apt:
+    name: 'fail2ban'
+    state: "{{ fail2ban_pkg_state }}"
   when: ansible_os_family == 'Debian'
   become: true
   tags: [fail2ban]
