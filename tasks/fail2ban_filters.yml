@@ -17,6 +17,8 @@
     - drupal-register.conf
     - apache-procselfenv.conf
     - drupal-psa-2018-004.conf
+    - sqli-char-attack.conf
+
   when: fail2ban_config_jail_apache_enabled
   become: true
 
