@@ -57,6 +57,8 @@ fail2ban_syslog_facility: 1
 fail2ban_socket: /var/run/fail2ban/fail2ban.sock
 fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
 
+fail2ban_dbpersist: yes
+
 fail2ban_authlog: /var/log/auth.log
 fail2ban_daemonlog: /var/log/daemon.log
 

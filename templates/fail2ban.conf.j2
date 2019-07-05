@@ -51,9 +51,17 @@ pidfile = {{ fail2ban_pidfile }}
 #         and data is lost when fail2ban is stopped.
 #         A value of "None" disables the database.
 # Values: [ None :memory: FILE ] Default: /var/lib/fail2ban/fail2ban.sqlite3
-#dbfile = /var/lib/fail2ban/fail2ban.sqlite3
+{% if fail2ban_dbpersist %}
+dbfile = /var/lib/fail2ban/fail2ban.sqlite3
+{% else %}
+# dbfile = /var/lib/fail2ban/fail2ban.sqlite3
+{% endif %}
 
 # Options: dbpurgeage
 # Notes.: Sets age at which bans should be purged from the database
 # Values: [ SECONDS ] Default: 86400 (24hours)
-#dbpurgeage = 86400
+{% if fail2ban_dbpersist %}
+dbpurgeage = 86400
+{% else %}
+# dbpurgeage = 86400
+{% endif %}
