@@ -1,4 +1,6 @@
 ---
+
+
 # Enable service on boot
 fail2ban_service_enabled: yes
 
@@ -6,12 +8,15 @@ fail2ban_service_enabled: yes
 fail2ban_service_state: 'started'
 
 # Allowed setting are: installed, latest
-fail2ban_pkg_state: 'installed'
+fail2ban_pkg_state: 'present'
 
 # "ignoreip" can be a single IP address, a CIDR mask or a DNS host or a list of IP addresses (see readme)
 fail2ban_config_ignoreip:
   - "{{ ansible_ssh_host }}"
   - "127.0.0.1/8"
+
+# version differences - some use 'f2b'
+fail2ban_jail_prefix: 'fail2ban'
 
 # 24 hours = 3600*24 = 86400
 # -1 = permanent
@@ -21,7 +26,7 @@ fail2ban_config_maxretry: 3
 fail2ban_config_destemail: "root"
 
 # select ban option on specified ports or all ports
-fail2ban_config_banaction: iptables-allports
+fail2ban_config_banaction: iptables-multiport
 
 # Jail Action:
 # specify the action to take:
@@ -43,12 +48,16 @@ fail2ban_config_jailaction: "%(action_)s"
 
 # updated from https://github.com/Oefenweb/ansible-fail2ban
 # defaults file for fail2ban
+# note that in some versions you need INFO not 3.
+# we could sniff the version and update.
 fail2ban_loglevel: 3
 fail2ban_logtarget: /var/log/fail2ban.log
 fail2ban_syslog_target: /var/log/fail2ban.log
 fail2ban_syslog_facility: 1
 fail2ban_socket: /var/run/fail2ban/fail2ban.sock
 fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
+
+fail2ban_dbpersist: yes
 
 fail2ban_authlog: /var/log/auth.log
 fail2ban_daemonlog: /var/log/daemon.log
@@ -81,6 +90,9 @@ fail2ban_config_jail_monit_enabled: false
 fail2ban_config_jail_apacheddos_enabled: true
 fail2ban_config_jail_apache_cmsnoway_enabled: false
 fail2ban_config_jail_drupal_register_enabled: false
+fail2ban_config_jail_procselfenv_enabled: false
+fail2ban_config_jail_drupal_psa_2018_004_enabled: false
+fail2ban_config_jail_sqli_char_attack_enabled: false
 
 fail2ban_badips_jails:
   - ssh

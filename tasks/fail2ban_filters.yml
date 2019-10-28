@@ -1,5 +1,5 @@
 ---
-# WE have som ejilas from the 0.9 version
+# We have some filters from the 0.9 version
 # and some custom filters so we need to upload these.
 # I plan to change this to a fact based list of filters but for now
 # we will simply do it long hand for the ones we know
@@ -15,7 +15,13 @@
     - apache-dosevasive.conf
     - apache-cmsnoway.conf
     - drupal-register.conf
+    - apache-procselfenv.conf
+    - drupal-psa-2018-004.conf
+    - sqli-char-attack.conf
+
+  when: fail2ban_config_jail_apache_enabled
   become: true
+
   tags: [fail2ban]
 
 - name: Fail2ban | Add drupal fail2ban filter

@@ -24,7 +24,6 @@ action    = {{ fail2ban_config_jailaction }}
 
 [pam-generic]
 enabled   = {{ fail2ban_config_jail_pamgeneric_enabled }}
-banaction = {{ fail2ban_config_banaction }}
 
 [ssh-ddos]
 enabled   = {{ fail2ban_config_jail_sshddos_enabled }}
@@ -42,7 +41,6 @@ filter = sshd
 action = route
 logpath = {{ fail2ban_authlog }}
 maxretry = 6
-action    = route
 {% if fail2ban_badips_action and 'sshroute' in firewall_badips_jails %}
              badips[category="ssh", key="{{ badips_key}}"]
 {% endif %}
@@ -242,7 +240,16 @@ filter  = apache-cmsnoway
 port     = http,https
 action = {{ fail2ban_config_jailaction }}
 logpath = /var/log/{{ apache_daemon }}*/*access.log
-bantime = -1
+#bantime = 86400
+maxretry = 1
+
+[apache-procselfenv]
+enabled = {{ fail2ban_config_jail_procselfenv_enabled }}
+filter  = apache-procselfenv
+port     = http,https
+action = {{ fail2ban_config_jailaction }}
+logpath = /var/log/{{ apache_daemon }}*/*access.log
+#bantime = 86400
 maxretry = 1
 
 [drupal-register]
@@ -251,7 +258,30 @@ port      = http,https
 filter    = drupal-register
 banaction = iptables-allports
 action    = %(action_mwl)s
+logpath   = /var/log/{{ apache_daemon }}*/*access.log
+maxretry  = 3
+#bantime   = -1
+
+[drupal-psa-2018-004]
+enabled   = {{ fail2ban_config_jail_drupal_psa_2018_004_enabled }}
+port      = http,https
+filter    = drupal-psa-2018-004
+banaction = iptables-ipset-proto6-allports
+action    = %(action_mwl)s
+logpath   = /var/log/apache2*/*access.log
+maxretry  = 1
+destemail = george@blue-bag.com
+bantime   = 604800
+
+
+[sqli-char-attack]
+enabled   = {{ fail2ban_config_jail_sqli_char_attack_enabled }}
+port      = http,https
+filter    = sqli-char-attack
+banaction = iptables-ipset-proto6-allports
+action    = %(action_mwl)s
 logpath   = /var/log/apache2*/*access.log
 maxretry  = 3
-bantime   = -1
+destemail = george@blue-bag.com
+bantime   = 604800
 
