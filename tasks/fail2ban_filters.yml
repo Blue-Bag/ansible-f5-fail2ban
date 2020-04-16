@@ -18,6 +18,7 @@
     - apache-procselfenv.conf
     - drupal-psa-2018-004.conf
     - sqli-char-attack.conf
+    - sshd-ddos.conf
 
   when: fail2ban_config_jail_apache_enabled
   become: true
@@ -35,4 +36,3 @@
   when: fail2ban_config_jail_monit_enabled
   become: true
   tags: [fail2ban]
-
