@@ -73,7 +73,7 @@ fail2ban_chain: INPUT
 # other rules (Ipset blocks for example)
 fail2ban_rule_startindex: 1
 
-# Jails
+# Jails (left for backward compatibility)
 fail2ban_config_jail_ssh_enabled: true
 fail2ban_config_jail_sshroute_enabled: true
 fail2ban_config_jail_sshddos_enabled: true
@@ -93,6 +93,278 @@ fail2ban_config_jail_drupal_register_enabled: false
 fail2ban_config_jail_procselfenv_enabled: false
 fail2ban_config_jail_drupal_psa_2018_004_enabled: false
 fail2ban_config_jail_sqli_char_attack_enabled: false
+
+# convert the jail template to use a dictionary
+jails:
+  - name: 'drupal-psa-2018-004'
+    enabled: "{{ fail2ban_config_jail_drupal_psa_2018_004_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'drupal-psa-2018-004'
+    banaction: 'iptables-ipset-proto6-allports'
+    action: '%(action_mwl)s'
+    logpath: '/var/log/apache2*/*access.log'
+    maxretry: '1'
+    destemails:
+      - "{{ fail2ban_config_destemail }}"
+    bantime:  '604800'
+  - name: 'ssh'
+    enabled: "{{ fail2ban_config_jail_ssh_enabled }}"
+    ports:
+      - 'ssh'
+    filter: 'sshd'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'ssh'
+    logpath: "{{ fail2ban_authlog }}"
+    maxretry: "{{ fail2ban_config_maxretry}} "
+  - name: 'pam-generic'
+    enabled: "{{ fail2ban_config_jail_pamgeneric_enabled }}"
+  - name: 'ssh-ddos'
+    enabled: "{{ fail2ban_config_jail_sshddos_enabled }}"
+    ports:
+      - 'ssh'
+    filter: 'sshd-ddos'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'sshd-ddos'
+    logpath: "{{ fail2ban_authlog }}"
+  - name: 'ssh-route'
+    enabled: "{{ fail2ban_config_jail_sshroute_enabled }}"
+    filter: 'sshd'
+    action: 'route'
+    badip_category: 'ssh'
+    logpath: "{{ fail2ban_authlog }}"
+    maxretry: "{{ fail2ban_config_maxretry}} "
+  - name: 'webmin'
+    enabled: "{{ fail2ban_config_jail_webmin_enabled }}"
+    ports:
+      - '10000'
+      - '20000'
+    filter: 'webmin-auth'
+    banaction: "{{ fail2ban_config_banaction }}"
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'webmin'
+    logpath: "{{ fail2ban_authlog }}"
+    maxretry: "{{ fail2ban_config_maxretry}} "
+  - name: 'apache'
+    enabled: "{{ fail2ban_config_jail_apache_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-auth'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    maxretry: "{{ fail2ban_config_maxretry}} "
+  - name: 'apache-noscript'
+    enabled: "{{ fail2ban_config_jail_apache_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    banaction: "{{ fail2ban_config_banaction }}"
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    maxretry: "{{ fail2ban_config_maxretry}} "
+  - name: 'apache-overflows'
+    enabled: "{{ fail2ban_config_jail_apache_enabled }}"
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+  - name: 'apache-modsecurity'
+    enabled: "{{ fail2ban_config_jail_modsec_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-modsecurity'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'modsecurity'
+    logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    maxretry: '2'
+  - name: 'apache-badbots'
+    enabled: "{{ fail2ban_config_jail_apache_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-badbots'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'badbots'
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    maxretry: '1'
+  - name: 'apache-nohome'
+    enabled: "{{ fail2ban_config_jail_apache_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-nohome'
+    banaction: "{{ fail2ban_config_banaction }}"
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    maxretry: '1'
+  - name: 'php-url-fopen'
+    enabled: "{{ fail2ban_config_jail_php_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'php-url-fopen'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'php'
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    maxretry: '1'
+  - name: 'exim'
+    enabled: "{{ fail2ban_config_jail_exim_enabled }}"
+    ports:
+      - 'smtp'
+      - 'ssmtp'
+    filter: 'exim'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'mail'
+    logpath: '/var/log/exim*/rejectlog'
+    maxretry: '1'
+  - name: 'apache-w00tw00t'
+    enabled: ""
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-w00tw00t'
+    banaction: "{{ fail2ban_config_banaction }}"
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache-w00tw00t'
+    logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    maxretry: '1'
+  - name: 'apache-myadmin'
+    enabled: "{{ fail2ban_config_jail_apache_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-myadmin'
+    banaction: "{{ fail2ban_config_banaction }}"
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    maxretry: '2'
+  - name: 'proftpd'
+    enabled: "{{ fail2ban_config_jail_ftp_enabled }}"
+    ports:
+      - 'ftp'
+      - 'ftp-data'
+      - 'ftps'
+      - 'ftps-data'
+    filter: 'proftpd'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'ftp'
+    logpath: "/var/log/proftpd/proftpd.log"
+    maxretry: "{{ fail2ban_config_maxretry}} "
+  - name: 'recidive'
+    enabled: "{{ fail2ban_config_jail_recidive_enabled }}"
+    filter: 'recidive'
+    action: 'iptables-allports[name=recidive]
+             sendmail-whois-lines[name=recidive, logpath=/var/log/fail2ban.log]'
+    logpath: "{{ fail2ban_logtarget }}"
+    maxretry: '5'
+    bantime: '604800'
+    findtime: '86400'
+  - name: 'drupal-auth'
+    note: 'requires syslog'
+    enabled: "{{ fail2ban_config_jail_drupalauth_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'drupal-auth'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'drupal'
+    logpath: "{{ fail2ban_daemonlog }}"
+    maxretry: "{{ fail2ban_config_maxretry}} "
+  - name: 'monit'
+    note: 'Ban clients brute-forcing the monit gui login'
+    enabled: "{{ fail2ban_config_jail_monit_enabled }}"
+    ports:
+      - "{{ monit_webinterface_port }}"
+    filter: ''
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'monit'
+    logpath: "/var/log/monit.log"
+  - name: 'apache-dosevasive'
+    enabled: "{{ fail2ban_config_jail_apacheddos_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-dosevasive'
+    action: "{{ fail2ban_config_jailaction }}"
+    logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    bantime: '240'
+    maxretry: '10'
+  - name: 'apache-cmsnoway'
+    enabled: "{{ fail2ban_config_jail_apache_cmsnoway_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-cmsnoway'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: ''
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    maxretry: '1'
+  - name: 'apache-procselfenv'
+    enabled: "{{ fail2ban_config_jail_procselfenv_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-procselfenv'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    maxretry: '1'
+  - name: 'drupal-register'
+    note: 'CAUTION: only if you don''t allow registration'
+    enabled: "{{ fail2ban_config_jail_drupal_register_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'drupal-register'
+    banaction: 'iptables-allports'
+    action: '%(action_mwl)s'
+    badip_category: 'drupal'
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    maxretry: '3'
+  - name: 'drupal-psa-2018-004'
+    note: 'CAUTION: can have false positives'
+    enabled: "{{ fail2ban_config_jail_drupal_psa_2018_004_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'drupal-psa-2018-004'
+    banaction: 'iptables-ipset-proto6-allports'
+    action: '%(action_mwl)s'
+    badip_category: 'drupal'
+    logpath: "/var/log/apache2*/*access.log"
+    maxretry: '1'
+    bantime: '604800'
+    destemails: "{{ fail2ban_config_destemail }}"
+  - name: 'sqli-char-attack'
+    enabled: "{{ fail2ban_config_jail_sqli_char_attack_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'sqli-char-attack'
+    banaction: 'iptables-ipset-proto6-allports'
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: ''
+    logpath: "/var/log/apache2*/*access.log"
+    maxretry: '3'
+    bantime: '604800'
+    destemails: "{{ fail2ban_config_destemail }}"
+
+  # - name: ''
+  #   note:
+  #   enabled: ""
+  #   ports:
+  #     - ''
+  #   filter: ''
+  #   action: "{{ fail2ban_config_jailaction }}"
+  #   badip_category: ''
+  #   logpath: ""
+  #   maxretry: "{{ fail2ban_config_maxretry}} "
 
 fail2ban_badips_jails:
   - ssh
