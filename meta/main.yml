@@ -5,6 +5,7 @@ galaxy_info:
   author: George Boobyer
   company: Blue-Bag Ltd
   license: MIT
+  description: 'Install and configure fail2bn on linux'
   min_ansible_version: 1.8
   platforms:
   - name: EL
@@ -16,7 +17,5 @@ galaxy_info:
   - name: Debian
     versions:
     - all
-  categories:
-  - system
-
-
+  galaxy_tags:
+    - system
