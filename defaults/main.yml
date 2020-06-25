@@ -370,11 +370,12 @@ fail2ban_badips_jails:
   - ssh
   - sshroute
   - sshddos
-  - webmin
-  - exim
   - pamgeneric
-  - ftp
-  - monit
+#  - webmin
+#  - exim
+
+#  - ftp
+#  - monit
   # due to fasle positives these may be best excluded
   # - apache
   # - modsec
