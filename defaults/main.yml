@@ -376,11 +376,11 @@ fail2ban_badips_jails:
 
 #  - ftp
 #  - monit
-  # due to fasle positives these may be best excluded
-  # - apache
-  # - modsec
-  # - php
-  # - drupalauth
+# due to fasle positives these may be best excluded
+# - apache
+# - modsec
+# - php
+# - drupalauth
 
 # some defaults for custom jails
 monit_webinterface_port: 2812
