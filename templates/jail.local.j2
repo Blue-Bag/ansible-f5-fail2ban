@@ -285,3 +285,40 @@ maxretry  = 3
 destemail = george@blue-bag.com
 bantime   = 604800
 
+{% for jail in jails %}
+#[{{ jail.name }}]
+{% if jail.note is defined %}
+## {{ jail.note }}
+{% endif %}
+#enabled   = {{ jail.enabled }}
+{% if jail.filter is defined %}
+#filter    = {{ jail.filter }}
+{% endif %}
+{% if jail.ports is defined %}
+#port      = {{ jail.ports | join(",") }}
+{% endif %}
+{% if jail.banaction is defined %}
+#banaction = {{ jail.banaction }}
+{% endif %}
+{% if jail.action is defined %}
+#action    = {{ jail.action }}
+{% if fail2ban_badips_action and jail.name in firewall_badips_jails %}
+#             badips[category="{{jail.badip_category}}", key="{{ badips_key}}"]
+{% endif %}
+{% endif %}
+{% if jail.logpath is defined %}
+#logpath   = {{ jail.logpath }}
+{% endif %}
+{% if jail.maxretry is defined %}
+#maxretry  = {{ jail.maxretry }}
+{% endif %}
+{% if jail.destemails is defined %}
+#destemail = {{ jail.destemails | join(",") }}
+{% endif %}
+{% if jail.bantime is defined %}
+#bantime   = {{ jail.bantime }}
+{% endif %}
+{% if jail.findtime is defined %}
+#findtime   = {{ jail.findtime }}
+{% endif %}
+{% endfor %}

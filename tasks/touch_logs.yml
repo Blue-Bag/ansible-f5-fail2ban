@@ -4,21 +4,21 @@
   stat: path=/var/log/fail2ban.log
   become: true
   register: fail2ban_log
-  when: fail2ban_config_jail_recidive_enabled == True
+  when: fail2ban_config_jail_recidive_enabled|bool
 
 - name: fail2Ban | Touch fail2ban log - needs to exist
   file: path=/var/log/fail2ban.log state=touch owner=root group=adm mode=0640
   become: true
-  when: fail2ban_config_jail_recidive_enabled == True and fail2ban_log.stat.exists == false
+  when: fail2ban_config_jail_recidive_enabled|bool and not fail2ban_log.stat.exists|bool
 
 - name: fail2ban | Check for Exim4 log
   stat: path=/var/log/exim4/rejectlog
   become: true
   register: exim4_rejectlog
-  when: fail2ban_config_jail_exim_enabled == True
+  when: fail2ban_config_jail_exim_enabled|bool
 
 
 - name: fail2Ban | Touch exim reject log - needs to exist
   file: path=/var/log/exim4/rejectlog state=touch owner=Debian-exim group=adm mode=0640
   become: true
-  when: fail2ban_config_jail_exim_enabled == True and exim4_rejectlog.stat.exists == false
+  when: fail2ban_config_jail_exim_enabled|bool and not exim4_rejectlog.stat.exists|bool

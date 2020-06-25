@@ -44,7 +44,7 @@
     - {
       src: 'fail2ban.conf.j2',
       dest: '/etc/fail2ban/fail2ban.conf'
-   }
+    }
     - {
       src: 'fail2ban-iptables-multiport.local.j2',
       dest: '/etc/fail2ban/action.d/iptables-multiport.local'
@@ -77,21 +77,24 @@
 
 - name: Fail2ban | Ensure fail2Ban restarts after system restart
   lineinfile:
-            dest=/etc/default/fail2ban
-            regexp='FAIL2BAN_OPTS='
-            line='FAIL2BAN_OPTS="-x"'
-            state=present
+    dest: /etc/default/fail2ban
+    regexp: 'FAIL2BAN_OPTS='
+    line: 'FAIL2BAN_OPTS="-x"'
+    state: present
   become: true
   when: ansible_os_family == 'Debian'
   tags: [fail2ban]
   notify:
-   - restart fail2ban
+    - restart fail2ban
 
 # check for the presence of  logs for the jails
 - import_tasks: touch_logs.yml
 
 
 - name: start/stop fail2ban service
-  service: name=fail2ban state={{ fail2ban_service_state }} enabled={{ fail2ban_service_enabled }}
+  service:
+    name: fail2ban
+    state: "{{ fail2ban_service_state }}"
+    enabled: "{{ fail2ban_service_enabled }}"
   become: true
   tags: service

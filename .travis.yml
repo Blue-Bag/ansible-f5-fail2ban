@@ -1,0 +1,24 @@
+---
+language: python
+services: docker
+
+env:
+  global:
+    - ROLE_NAME: f5-fail2ban
+  matrix:
+    - MOLECULE_DISTRO: ubuntu1804
+    - MOLECULE_DISTRO: debian9
+
+install:
+  # Install test dependencies.
+  - pip install molecule yamllint ansible-lint docker
+
+script:
+  # Run tests.
+  - molecule test
+
+# yamllint disable rule:line-length
+notifications:
+  slack:
+    secure: YzMaWNJuYVIPtHcSOTFFiyz33/Lb1uS1dbCvPrPACbs6kCSmbM2nT/OVE44Q6vFTBnMFhHfjeaD1KF7e0BlPOgNGww5xv4F+WBhHYmrDW/2fE+HyIjNZtn4MuDQq+WaVGEIQAJdSpiBjejFm+AAerM2g07UuDMt3V4szEzPqoz1CDo6u3G4IvuMioV7nOxgBCxj8719tW1XRxmXSGrVdtQ3CuG8Yt5nHN5P5yJLub8pMyWir+OHYKc0UoHtthQe6tw3tvRz/l8l3UHpZd32aA57tB8wkSZsEWLXZL8jBweR1VFcqbGVOsipEiz9PKyynIoDzL+TKwoBOuyKQZ+3kwv9SsEEUqiPnIx5SYPjIp/rp0NOQVyAxc3D64OVERWA/cxs3jUlhoMaEUtUpzrcHwyOIYjU9GMqbsE7roVRxYV4SeVmSMgxxoUB2aFVuQ82fgtwc7VP7GzLw4Ej+druuqBxIWagXaNret1i11TZmtWOm/7pXDoGlJycVqpmMSVodE4Sl+Y9MjxZPssRI3HLV3IeieBK+SiJaEFQfguTaz4S1T7j9f1xTlTGVm4qLXMTQ3LFdZ/3rEKUE++idfYCuXQj7i2CiDnaDv+X1idlSwk216VKKjYdw+U8veLBbTsIs0e7RquCg5s6pWILO9GAj3Bpt9YuefxaM/+YToawbfus=
+# yamllint enable rule:line-length
