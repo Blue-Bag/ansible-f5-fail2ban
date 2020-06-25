@@ -1,6 +1,8 @@
 
 Fail2Ban Role
 ==============
+[![Build Status](https://travis-ci.org/Blue-Bag/ansible-f5-fail2ban.svg?branch=main)](https://travis-ci.org/Blue-Bag/ansible-f5-fail2ban)
+
 Install and configure Fail2Ban.
 
 Role Variables
