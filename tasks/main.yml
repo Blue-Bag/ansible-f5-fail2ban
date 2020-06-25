@@ -20,16 +20,16 @@
 
   # check for fail2ban version
 
-- name: update configuration file - /etc/fail2ban/fail2ban.conf
-  template:
-    src: fail2ban.conf.j2
-    dest: /etc/fail2ban/fail2ban.conf
-    owner: root
-    group: root
-    mode: 0644
-  become: true
-  notify: restart fail2ban
-  tags: [configuration, fail2ban, fail2ban-configuration]
+# - name: update configuration file - /etc/fail2ban/fail2ban.conf
+#   template:
+#     src: fail2ban.conf.j2
+#     dest: /etc/fail2ban/fail2ban.conf
+#     owner: root
+#     group: root
+#     mode: 0644
+#   become: true
+#   notify: restart fail2ban
+#   tags: [configuration, fail2ban, fail2ban-configuration]
 
 
 - name: update configuration file - /etc/fail2ban/fail2ban.conf
@@ -98,3 +98,16 @@
     enabled: "{{ fail2ban_service_enabled }}"
   become: true
   tags: service
+
+- block:
+    - name: get the output for systemd
+      command: "systemctl status fail2ban.service"
+      register: sysdoutput
+
+    - name: display output
+      debug:
+        msg: "{{ sysdoutput.stdout }}"
+        verbosity: 3
+  when:
+    - fail2ban_debug
+    - ansible_service_mgr == 'systemd'
