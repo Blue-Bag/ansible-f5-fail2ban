@@ -2,7 +2,7 @@
 
 
 # Enable service on boot
-fail2ban_service_enabled: yes
+fail2ban_service_enabled: true
 
 # Allowed setting are: started, stopped
 fail2ban_service_state: 'started'
@@ -57,7 +57,7 @@ fail2ban_syslog_facility: 1
 fail2ban_socket: /var/run/fail2ban/fail2ban.sock
 fail2ban_pidfile: /var/run/fail2ban/fail2ban.pid
 
-fail2ban_dbpersist: yes
+fail2ban_dbpersist: true
 
 fail2ban_authlog: /var/log/auth.log
 fail2ban_daemonlog: /var/log/daemon.log
@@ -82,12 +82,12 @@ fail2ban_config_jail_apache_enabled: false
 fail2ban_config_jail_modsec_enabled: false
 fail2ban_config_jail_exim_enabled: false
 fail2ban_config_jail_pamgeneric_enabled: true
-fail2ban_config_jail_php_enabled: true
+fail2ban_config_jail_php_enabled: false
 fail2ban_config_jail_ftp_enabled: false
 fail2ban_config_jail_recidive_enabled: false
 fail2ban_config_jail_drupalauth_enabled: false
 fail2ban_config_jail_monit_enabled: false
-fail2ban_config_jail_apacheddos_enabled: true
+fail2ban_config_jail_apacheddos_enabled: false
 fail2ban_config_jail_apache_cmsnoway_enabled: false
 fail2ban_config_jail_drupal_register_enabled: false
 fail2ban_config_jail_procselfenv_enabled: false
@@ -108,7 +108,7 @@ jails:
     maxretry: '1'
     destemails:
       - "{{ fail2ban_config_destemail }}"
-    bantime:  '604800'
+    bantime: '604800'
   - name: 'ssh'
     enabled: "{{ fail2ban_config_jail_ssh_enabled }}"
     ports:
@@ -355,16 +355,16 @@ jails:
     bantime: '604800'
     destemails: "{{ fail2ban_config_destemail }}"
 
-  # - name: ''
-  #   note:
-  #   enabled: ""
-  #   ports:
-  #     - ''
-  #   filter: ''
-  #   action: "{{ fail2ban_config_jailaction }}"
-  #   badip_category: ''
-  #   logpath: ""
-  #   maxretry: "{{ fail2ban_config_maxretry}} "
+# - name: ''
+#   note:
+#   enabled: ""
+#   ports:
+#     - ''
+#   filter: ''
+#   action: "{{ fail2ban_config_jailaction }}"
+#   badip_category: ''
+#   logpath: ""
+#   maxretry: "{{ fail2ban_config_maxretry}} "
 
 fail2ban_badips_jails:
   - ssh
@@ -375,7 +375,7 @@ fail2ban_badips_jails:
   - pamgeneric
   - ftp
   - monit
- # due to fasle positives these may be best excluded
+  # due to fasle positives these may be best excluded
   # - apache
   # - modsec
   # - php
@@ -385,5 +385,5 @@ fail2ban_badips_jails:
 monit_webinterface_port: 2812
 webmin_port: 10000
 
-fail2ban_badips_action: False
-#badips_key: ''
+fail2ban_badips_action: false
+# badips_key: ''

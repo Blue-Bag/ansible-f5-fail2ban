@@ -8,14 +8,14 @@ galaxy_info:
   description: 'Install and configure fail2bn on linux'
   min_ansible_version: 1.8
   platforms:
-  - name: EL
-    versions:
-    - all
-  - name: Ubuntu
-    versions:
-    - all
-  - name: Debian
-    versions:
-    - all
+    - name: EL
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
   galaxy_tags:
     - system
