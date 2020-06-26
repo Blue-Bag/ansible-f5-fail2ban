@@ -101,7 +101,7 @@
 
 - block:
     - name: restart the service
-      service: name=fail2ban state=reload
+      service: name=fail2ban state=reloaded
       ignore_errors: true
 
     - name: get the output for systemd
