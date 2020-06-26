@@ -111,4 +111,4 @@
         msg: "{{ sysdoutput.stdout }}"
   when:
     - fail2ban_debug
-    - ansible_service_mgr == 'systemd'
+#   - ansible_service_mgr == 'systemd'
