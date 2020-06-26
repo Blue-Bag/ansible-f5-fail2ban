@@ -61,7 +61,6 @@
       src: 'fail2ban-iptables-ipset-proto6-allports.local.j2',
       dest: '/etc/fail2ban/action.d/iptables-ipset-proto6-allports.local'
     }
-
   notify: restart fail2ban
   tags: [configuration, fail2ban, fail2ban-configuration]
 
@@ -100,6 +99,9 @@
   tags: service
 
 - block:
+    - name: restart the service
+      service: name=fail2ban state=restarted
+
     - name: get the output for systemd
       command: "systemctl status fail2ban.service"
       register: sysdoutput
@@ -107,7 +109,6 @@
     - name: display output
       debug:
         msg: "{{ sysdoutput.stdout }}"
-        verbosity: 3
   when:
     - fail2ban_debug
     - ansible_service_mgr == 'systemd'
