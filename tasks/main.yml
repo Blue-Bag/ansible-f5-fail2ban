@@ -112,7 +112,7 @@
     - name: reload service fail2ban
       systemd:
         name: fail2ban
-        daemon_reload: yes
+        daemon_reload: true
         state: started
       ignore_errors: true
 
@@ -134,7 +134,8 @@
       command: 'cat /var/log/fail2ban.log'
       register: fail2banlog
 
-    - debug:
+    - name: display logfile
+      debug:
         msg: "{{ fail2banlog.stdout }}"
 
   when:
