@@ -16,14 +16,15 @@ fail2ban_config_ignoreip:
   - "127.0.0.1/8"
 
 # version differences - some use 'f2b'
-fail2ban_jail_prefix: 'fail2ban'
+fail2ban_jail_prefix: 'f2b'
 
 # 24 hours = 3600*24 = 86400
 # -1 = permanent
 fail2ban_config_bantime: 86400
 fail2ban_config_findtime: 600
 fail2ban_config_maxretry: 3
-fail2ban_config_destemail: "root"
+fail2ban_config_destemail:
+  - "root"
 
 # select ban option on specified ports or all ports
 fail2ban_config_banaction: iptables-multiport
@@ -50,7 +51,7 @@ fail2ban_config_jailaction: "%(action_)s"
 # defaults file for fail2ban
 # note that in some versions you need INFO not 3.
 # we could sniff the version and update.
-fail2ban_loglevel: 3
+fail2ban_loglevel: INFO
 fail2ban_logtarget: /var/log/fail2ban.log
 fail2ban_syslog_target: /var/log/fail2ban.log
 fail2ban_syslog_facility: 1
