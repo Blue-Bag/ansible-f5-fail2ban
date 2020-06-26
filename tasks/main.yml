@@ -102,6 +102,7 @@
 - block:
     - name: restart the service
       service: name=fail2ban state=restarted
+      ignore_errors: true
 
     - name: get the output for systemd
       command: "systemctl status fail2ban.service"
