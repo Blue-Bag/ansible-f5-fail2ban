@@ -129,6 +129,9 @@
         msg:
           - "{{ sysdoutput.stdout }}"
           - "{{ journoutput.stdout }}"
+
+    - debug: msg="the value of foo.txt is {{lookup('file', '/var/log/fail2ban.log') }}"
+
   when:
     - fail2ban_debug | bool
 #   - ansible_service_mgr == 'systemd'
