@@ -100,10 +100,14 @@
 #   ignore_errors: true
 
 - block:
-    - name: restart the service
-      service: name=fail2ban state=reloaded
-      ignore_errors: true
+    # - name: restart the service
+    #   service: name=fail2ban state=reloaded
 
+    - name: reload service fail2ban
+      systemd:
+        name: fail2ban
+        state: reloaded
+      ignore_errors: true
     - name: get the output for systemd
       command: "systemctl status fail2ban.service"
       register: sysdoutput
@@ -116,7 +120,7 @@
       debug:
         msg:
           - "{{ sysdoutput.stdout }}"
-          - "{{ journoutput }}"
+          - "{{ journoutput.stdout }}"
   when:
     - fail2ban_debug | bool
 #   - ansible_service_mgr == 'systemd'
