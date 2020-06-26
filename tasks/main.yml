@@ -106,8 +106,16 @@
     - name: reload service fail2ban
       systemd:
         name: fail2ban
-        state: reloaded
+        state: stopped
       ignore_errors: true
+
+    - name: reload service fail2ban
+      systemd:
+        name: fail2ban
+        daemon_reload: yes
+        state: started
+      ignore_errors: true
+
     - name: get the output for systemd
       command: "systemctl status fail2ban.service"
       register: sysdoutput
