@@ -90,14 +90,14 @@
 - import_tasks: touch_logs.yml
 
 
-# - name: start/stop fail2ban service
-#   service:
-#     name: fail2ban
-#     state: "{{ fail2ban_service_state }}"
-#     enabled: "{{ fail2ban_service_enabled }}"
-#   become: true
-#   tags: service
-#   ignore_errors: true
+- name: start/stop fail2ban service
+  service:
+    name: fail2ban
+    state: "{{ fail2ban_service_state }}"
+    enabled: "{{ fail2ban_service_enabled }}"
+  become: true
+  tags: service
+  ignore_errors: true
 
 - block:
     # - name: restart the service

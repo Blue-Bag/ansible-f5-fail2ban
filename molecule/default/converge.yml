@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    fail2ban_debug: true
+    fail2ban_debug: false
   pre_tasks:
     - name: Update apt cache.
       apt: update_cache=true cache_valid_time=1200
