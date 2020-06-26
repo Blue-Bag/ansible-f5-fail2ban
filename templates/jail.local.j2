@@ -2,7 +2,7 @@
 
 [DEFAULT]
 bantime   = {{ fail2ban_config_bantime }}
-destemail = {{ fail2ban_config_destemail | join(",") | default('root')}}
+destemail = {{ fail2ban_config_destemail | list | join(",") | default('root')}}
 banaction = {{ fail2ban_config_banaction }}
 action    = {{ fail2ban_config_jailaction }}
 maxretry  = {{ fail2ban_config_maxretry }}
@@ -10,7 +10,7 @@ findtime  = {{ fail2ban_config_findtime }}
 
 ignoreip = {{ fail2ban_config_ignoreip | join(" ") }}
 
-# JAILS
+{# # JAILS
 [ssh]
 enabled   = {{ fail2ban_config_jail_ssh_enabled }}
 port      = ssh
@@ -284,41 +284,44 @@ logpath   = /var/log/apache2*/*access.log
 maxretry  = 3
 destemail = george@blue-bag.com
 bantime   = 604800
+#}
 
-{% for jail in jails %}
-#[{{ jail.name }}]
+ # JAILS
+{% for jail in jails if jail.enabled %}
+[{{ jail.name }}]
 {% if jail.note is defined %}
-## {{ jail.note }}
+{{ jail.note }}
 {% endif %}
-#enabled   = {{ jail.enabled }}
+enabled   = {{ jail.enabled }}
 {% if jail.filter is defined %}
-#filter    = {{ jail.filter }}
+filter    = {{ jail.filter }}
 {% endif %}
 {% if jail.ports is defined %}
-#port      = {{ jail.ports | join(",") }}
+port      = {{ jail.ports | join(",") }}
 {% endif %}
 {% if jail.banaction is defined %}
-#banaction = {{ jail.banaction }}
+banaction = {{ jail.banaction }}
 {% endif %}
 {% if jail.action is defined %}
-#action    = {{ jail.action }}
+action    = {{ jail.action }}
 {% if fail2ban_badips_action and jail.name in firewall_badips_jails %}
-#             badips[category="{{jail.badip_category}}", key="{{ badips_key}}"]
+             badips[category="{{jail.badip_category}}", key="{{ badips_key}}"]
 {% endif %}
 {% endif %}
 {% if jail.logpath is defined %}
-#logpath   = {{ jail.logpath }}
+logpath   = {{ jail.logpath }}
 {% endif %}
 {% if jail.maxretry is defined %}
-#maxretry  = {{ jail.maxretry }}
+maxretry  = {{ jail.maxretry }}
 {% endif %}
 {% if jail.destemails is defined %}
-#destemail = {{ jail.destemails | join(",") }}
+destemail = {{ jail.destemails | join(",") }}
 {% endif %}
 {% if jail.bantime is defined %}
-#bantime   = {{ jail.bantime }}
+bantime   = {{ jail.bantime }}
 {% endif %}
 {% if jail.findtime is defined %}
-#findtime   = {{ jail.findtime }}
+findtime   = {{ jail.findtime }}
 {% endif %}
+
 {% endfor %}
