@@ -74,6 +74,18 @@ fail2ban_chain: INPUT
 # other rules (Ipset blocks for example)
 fail2ban_rule_startindex: 1
 
+# Filters
+fail2ban_filters:
+  - sshd-ddos.conf
+  # - apache-myadmin.conf
+  # - apache-w00tw00t.conf
+  # - apache-dosevasive.conf
+  # - apache-cmsnoway.conf
+  # - drupal-register.conf
+  # - apache-procselfenv.conf
+  # - drupal-psa-2018-004.conf
+  # - sqli-char-attack.conf
+
 # Jails (left for backward compatibility)
 fail2ban_config_jail_ssh_enabled: true
 fail2ban_config_jail_sshroute_enabled: true
@@ -96,25 +108,13 @@ fail2ban_config_jail_drupal_psa_2018_004_enabled: false
 fail2ban_config_jail_sqli_char_attack_enabled: false
 
 # convert the jail template to use a dictionary
-jails:
-  - name: 'drupal-psa-2018-004'
-    enabled: "{{ fail2ban_config_jail_drupal_psa_2018_004_enabled }}"
-    ports:
-      - 'http'
-      - 'https'
-    filter: 'drupal-psa-2018-004'
-    banaction: 'iptables-ipset-proto6-allports'
-    action: '%(action_mwl)s'
-    logpath: '/var/log/apache2*/*access.log'
-    maxretry: '1'
-    destemails:
-      - "{{ fail2ban_config_destemail }}"
-    bantime: '604800'
+fail2ban_jails:
   - name: 'ssh'
     enabled: "{{ fail2ban_config_jail_ssh_enabled }}"
     ports:
       - 'ssh'
     filter: 'sshd'
+    filter_upload: false
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'ssh'
     logpath: "{{ fail2ban_authlog }}"
@@ -126,22 +126,40 @@ jails:
     ports:
       - 'ssh'
     filter: 'sshd-ddos'
+    filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'sshd-ddos'
     logpath: "{{ fail2ban_authlog }}"
   - name: 'ssh-route'
     enabled: "{{ fail2ban_config_jail_sshroute_enabled }}"
     filter: 'sshd'
+    filter_upload: false
     action: 'route'
     badip_category: 'ssh'
     logpath: "{{ fail2ban_authlog }}"
     maxretry: "{{ fail2ban_config_maxretry}} "
+
+  - name: 'drupal-psa-2018-004'
+    enabled: "{{ fail2ban_config_jail_drupal_psa_2018_004_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'drupal-psa-2018-004'
+    filter_upload: true
+    banaction: 'iptables-ipset-proto6-allports'
+    action: '%(action_mwl)s'
+    logpath: '/var/log/apache2*/*access.log'
+    maxretry: '1'
+    destemails:
+      - "{{ fail2ban_config_destemail }}"
+    bantime: '604800'
   - name: 'webmin'
     enabled: "{{ fail2ban_config_jail_webmin_enabled }}"
     ports:
       - '10000'
       - '20000'
     filter: 'webmin-auth'
+    filter_upload: false
     banaction: "{{ fail2ban_config_banaction }}"
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'webmin'
@@ -153,6 +171,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'apache-auth'
+    filter_upload: trfalseue
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
@@ -162,6 +181,8 @@ jails:
     ports:
       - 'http'
       - 'https'
+    filter: 'apache-noscript'
+    filter_upload: false
     banaction: "{{ fail2ban_config_banaction }}"
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
@@ -169,6 +190,8 @@ jails:
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'apache-overflows'
     enabled: "{{ fail2ban_config_jail_apache_enabled }}"
+    filter: 'apache-overflows'
+    filter_upload: false
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
@@ -178,6 +201,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'apache-modsecurity'
+    filter_upload: false
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'modsecurity'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
@@ -188,6 +212,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'apache-badbots'
+    filter_upload: false
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'badbots'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
@@ -198,6 +223,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'apache-nohome'
+    filter_upload: false
     banaction: "{{ fail2ban_config_banaction }}"
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
@@ -209,6 +235,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'php-url-fopen'
+    filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'php'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
@@ -219,16 +246,18 @@ jails:
       - 'smtp'
       - 'ssmtp'
     filter: 'exim'
+    filter_upload: false
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'mail'
     logpath: '/var/log/exim*/rejectlog'
     maxretry: '1'
   - name: 'apache-w00tw00t'
-    enabled: ""
+    enabled: "false"
     ports:
       - 'http'
       - 'https'
     filter: 'apache-w00tw00t'
+    filter_upload: true
     banaction: "{{ fail2ban_config_banaction }}"
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache-w00tw00t'
@@ -240,6 +269,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'apache-myadmin'
+    filter_upload: true
     banaction: "{{ fail2ban_config_banaction }}"
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
@@ -253,6 +283,7 @@ jails:
       - 'ftps'
       - 'ftps-data'
     filter: 'proftpd'
+    filter_upload: false
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'ftp'
     logpath: "/var/log/proftpd/proftpd.log"
@@ -260,6 +291,7 @@ jails:
   - name: 'recidive'
     enabled: "{{ fail2ban_config_jail_recidive_enabled }}"
     filter: 'recidive'
+    filter_upload: false
     action: 'iptables-allports[name=recidive]
              sendmail-whois-lines[name=recidive, logpath=/var/log/fail2ban.log]'
     logpath: "{{ fail2ban_logtarget }}"
@@ -273,6 +305,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'drupal-auth'
+    filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'drupal'
     logpath: "{{ fail2ban_daemonlog }}"
@@ -282,7 +315,8 @@ jails:
     enabled: "{{ fail2ban_config_jail_monit_enabled }}"
     ports:
       - "{{ monit_webinterface_port }}"
-    filter: ''
+    filter: 'monit'
+    filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'monit'
     logpath: "/var/log/monit.log"
@@ -292,6 +326,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'apache-dosevasive'
+    filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
     bantime: '240'
@@ -302,6 +337,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'apache-cmsnoway'
+    filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: ''
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
@@ -312,6 +348,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'apache-procselfenv'
+    filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
@@ -323,6 +360,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'drupal-register'
+    filter_upload: true
     banaction: 'iptables-allports'
     action: '%(action_mwl)s'
     badip_category: 'drupal'
@@ -335,6 +373,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'drupal-psa-2018-004'
+    filter_upload: true
     banaction: 'iptables-ipset-proto6-allports'
     action: '%(action_mwl)s'
     badip_category: 'drupal'
@@ -348,6 +387,7 @@ jails:
       - 'http'
       - 'https'
     filter: 'sqli-char-attack'
+    filter_upload: true
     banaction: 'iptables-ipset-proto6-allports'
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: ''
@@ -362,6 +402,7 @@ jails:
 #   ports:
 #     - ''
 #   filter: ''
+#   filter_upload: true/false
 #   action: "{{ fail2ban_config_jailaction }}"
 #   badip_category: ''
 #   logpath: ""
