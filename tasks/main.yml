@@ -101,16 +101,22 @@
 
 - block:
     - name: restart the service
-      service: name=fail2ban state=restarted
+      service: name=fail2ban state=reload
       ignore_errors: true
 
     - name: get the output for systemd
       command: "systemctl status fail2ban.service"
       register: sysdoutput
 
+    - name: get the journal output
+      command: "journalctl -xe"
+      register: journoutput
+
     - name: display output
       debug:
-        msg: "{{ sysdoutput.stdout }}"
+        msg:
+          - "{{ sysdoutput.stdout }}"
+          - "{{ journoutput }}"
   when:
     - fail2ban_debug | bool
 #   - ansible_service_mgr == 'systemd'
