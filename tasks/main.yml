@@ -130,7 +130,12 @@
           - "{{ sysdoutput.stdout }}"
           - "{{ journoutput.stdout }}"
 
-    - debug: msg="the value of foo.txt is {{lookup('file', '/var/log/fail2ban.log') }}"
+    - name: get log file
+      command: 'cat /var/log/fail2ban.log'
+      register: fail2banlog
+
+    - debug:
+        msg: "{{ fail2banlog.stdout }}"
 
   when:
     - fail2ban_debug | bool
