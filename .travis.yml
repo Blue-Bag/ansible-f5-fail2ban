@@ -7,7 +7,7 @@ env:
     - ROLE_NAME: f5-fail2ban
   matrix:
     - MOLECULE_DISTRO: ubuntu1804
-    - MOLECULE_DISTRO: debian9
+    - MOLECULE_DISTRO: debian10
 
 install:
   # Install test dependencies.
