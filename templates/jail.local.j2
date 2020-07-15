@@ -290,7 +290,7 @@ bantime   = 604800
 {% for jail in fail2ban_jails if jail.enabled %}
 [{{ jail.name }}]
 {% if jail.note is defined %}
-{{ jail.note }}
+# {{ jail.note }}
 {% endif %}
 enabled   = {{ jail.enabled }}
 {% if jail.filter is defined %}
