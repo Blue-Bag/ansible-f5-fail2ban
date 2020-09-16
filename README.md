@@ -12,7 +12,7 @@ See default.yml for commented vars.
 Usage
 ---------
 
-If you want to white list a set of ips
+If you want to provide a list of allowed set of ips
 Add them to the ignoreip list:
 
 You can use list filters to build up the list in a pre task.
@@ -21,7 +21,7 @@ You can use list filters to build up the list in a pre task.
        set_fact:
          fail2ban_config_ignoreip: "{{ myslistofips|union(myotherlistofips) }}"
 
-or just set them in vars (e.g. Whitelist the Newrelic ips)
+or just set them in vars (e.g. Allowlist the Newrelic ips)
 
     fail2ban_config_ignoreip:
       - "127.0.0.1/8"
