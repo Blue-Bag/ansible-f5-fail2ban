@@ -10,6 +10,7 @@
   copy:
     src: "{{ item.filter }}.conf"
     dest: "/etc/fail2ban/filter.d/{{ item.filter }}.conf"
+  become: true
   with_items:
     - "{{ fail2ban_jails }}"
   when:
