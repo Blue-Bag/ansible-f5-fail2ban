@@ -138,21 +138,6 @@ fail2ban_jails:
     badip_category: 'ssh'
     logpath: "{{ fail2ban_authlog }}"
     maxretry: "{{ fail2ban_config_maxretry}} "
-
-  - name: 'drupal-psa-2018-004'
-    enabled: "{{ fail2ban_config_jail_drupal_psa_2018_004_enabled }}"
-    ports:
-      - 'http'
-      - 'https'
-    filter: 'drupal-psa-2018-004'
-    filter_upload: true
-    banaction: 'iptables-ipset-proto6-allports'
-    action: '%(action_mwl)s'
-    logpath: '/var/log/apache2*/*access.log'
-    maxretry: '1'
-    destemails:
-      - "{{ fail2ban_config_destemail }}"
-    bantime: '604800'
   - name: 'webmin'
     enabled: "{{ fail2ban_config_jail_webmin_enabled }}"
     ports:
@@ -293,7 +278,8 @@ fail2ban_jails:
     filter: 'recidive'
     filter_upload: false
     action: 'iptables-allports[name=recidive]
-             sendmail-whois-lines[name=recidive, logpath=/var/log/fail2ban.log]'
+
+                          sendmail-whois-lines[name=recidive, logpath=/var/log/fail2ban.log]'
     logpath: "{{ fail2ban_logtarget }}"
     maxretry: '5'
     bantime: '604800'
@@ -319,7 +305,7 @@ fail2ban_jails:
     filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'monit'
-    logpath: "/var/log/monit.log"
+    logpath: "/var/log/monit/monit.log"
   - name: 'apache-dosevasive'
     enabled: "{{ fail2ban_config_jail_apacheddos_enabled }}"
     ports:
