@@ -56,6 +56,14 @@ e.g.
     # Values: TEXT
     ignoreregex =
 
+Notifications
+the default is to log and email a notigication
+This can get quite noisy with no required action so to tun off mailing and just log and ban the event changes
+
+``` %(action_mwl)s
+to 
+``` %(action_)s
+
 License
 -------
 BSD
