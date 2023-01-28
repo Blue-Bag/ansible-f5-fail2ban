@@ -106,6 +106,9 @@ fail2ban_config_jail_drupal_register_enabled: false
 fail2ban_config_jail_procselfenv_enabled: false
 fail2ban_config_jail_drupal_psa_2018_004_enabled: false
 fail2ban_config_jail_sqli_char_attack_enabled: false
+fail2ban_config_jail_log4j-cve-2021-44228_enabled: false
+fail2ban_config_jail_apache_406_enabled: false
+fail2ban_config_jail_apache_ua_sql_enabled: false
 
 # convert the jail template to use a dictionary
 fail2ban_jails:
@@ -367,6 +370,20 @@ fail2ban_jails:
     maxretry: '1'
     bantime: '604800'
     destemails: "{{ fail2ban_config_destemail }}"
+  - name: 'log4j-cve-2021-4422'
+    enabled: "{{ fail2ban_config_jail_log4j_cve_2021_44228_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'log4j-cve-2021-44228'
+    filter_upload: true
+    banaction: 'iptables-ipset-proto6-allports'
+    action: '%(action_mwl)s'
+    badip_category: 'java'
+    logpath: "/var/log/apache2*/*access.log"
+    maxretry: '1'
+    bantime: '604800'
+    destemails: "{{ fail2ban_config_destemail }}"    
   - name: 'sqli-char-attack'
     enabled: "{{ fail2ban_config_jail_sqli_char_attack_enabled }}"
     ports:
@@ -381,7 +398,32 @@ fail2ban_jails:
     maxretry: '3'
     bantime: '604800'
     destemails: "{{ fail2ban_config_destemail }}"
-
+  - name: 'apache-406'
+    enabled: "{{ fail2ban_config_jail_apache_406_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-406'
+    filter_upload: true
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    maxretry: '10'
+    bantime: '3600'
+    findtime: '60' 
+  - name: 'apache-ua-sql'
+    enabled: "{{ fail2ban_config_jail_apache_ua_sql_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-ua-sql'
+    filter_upload: true
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    maxretry: '1'
+    bantime: '604800'
+    findtime: '30'     
 # - name: ''
 #   note:
 #   enabled: ""
