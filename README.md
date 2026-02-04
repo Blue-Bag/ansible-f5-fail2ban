@@ -64,6 +64,31 @@ This can get quite noisy with no required action so to tun off mailing and just 
 to 
 ``` %(action_)s
 
+Notes & parameters
+ignoreip: This parameter identifies IP addresses that should be ignored by the banning system. By default, this is just set to ignore traffic coming from the machine itself, so that you don’t fill up your own logs or lock yourself out.
+
+bantime: This parameter sets the length of a ban, in seconds. The default is 10 minutes.
+
+findtime: This parameter sets the window that Fail2ban will pay attention to when looking for repeated failed authentication attempts. The default is set to 10 minutes, which means that the software will count the number of failed attempts in the last 10 minutes.
+
+maxretry: This sets the number of failed attempts that will be tolerated within the findtime window before a ban is instituted.
+
+backend: This entry specifies how Fail2ban will monitor log files. The setting of auto means that fail2ban will try pyinotify, then gamin, and then a polling algorithm based on what’s available. inotify is a built-in Linux kernel feature for tracking when files are accessed, and pyinotify is a Python interface to inotify, used by Fail2ban.
+
+usedns: This defines whether reverse DNS is used to help implement bans. Setting this to “no” will ban IPs themselves instead of their domain hostnames. The warn setting will attempt to look up a hostname and ban that way, but will log the activity for review.
+
+destemail: This is the address that will be sent notification mail if configured your action to mail alerts.
+
+sendername: This will be used in the email from field for generated notification emails
+
+banaction: This sets the action that will be used when the threshold is reached. This is actually a path to a file located in /etc/fail2ban/action.d/ called iptables-multiport.conf. This handles the actual iptables firewall manipulation to ban an IP address. We will look at this later.
+
+mta: This is the mail transfer agent that will be used to send notification emails.
+
+protocol: This is the type of traffic that will be dropped when an IP ban is implemented. This is also the type of traffic that is sent to the new iptables chain.
+
+chain: This is the chain that will be configured with a jump rule to send traffic to the fail2ban funnel.
+
 License
 -------
 BSD
