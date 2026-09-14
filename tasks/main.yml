@@ -6,21 +6,21 @@
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - files:
-        - "vars/{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
-        - "vars/{{ ansible_os_family }}.yml"
+        - "vars/{{ ansible_facts['os_family'] }}-{{ ansible_distribution_major_version }}.yml"
+        - "vars/{{ ansible_facts['os_family'] }}.yml"
       skip: true
 
 - name: install fail2ban for Debian
   apt:
     name: 'fail2ban'
     state: "{{ fail2ban_pkg_state }}"
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
   become: true
   tags: [fail2ban]
 
 - name: install fail2ban for RedHat
   yum: name=fail2ban state={{ fail2ban_pkg_state }}
-  when: ansible_os_family == 'RedHat'
+  when: ansible_facts['os_family'] == 'RedHat'
   become: true
   tags: [fail2ban]
 
@@ -87,7 +87,7 @@
     line: 'FAIL2BAN_OPTS="-x"'
     state: present
   become: true
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
   tags: [fail2ban]
   notify:
     - restart fail2ban
