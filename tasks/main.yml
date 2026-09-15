@@ -1,35 +1,41 @@
 ---
 
 # Include variables and define needed variables.
+
 - name: Include OS-specific variables.
-  include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "vars/{{ ansible_facts['os_family'] }}-{{ ansible_distribution_major_version }}.yml"
+        - "vars/{{ ansible_facts['os_family'] }}.yml"
+      skip: true
 
 - name: install fail2ban for Debian
   apt:
     name: 'fail2ban'
     state: "{{ fail2ban_pkg_state }}"
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
   become: true
   tags: [fail2ban]
 
 - name: install fail2ban for RedHat
   yum: name=fail2ban state={{ fail2ban_pkg_state }}
-  when: ansible_os_family == 'RedHat'
+  when: ansible_facts['os_family'] == 'RedHat'
   become: true
   tags: [fail2ban]
 
   # check for fail2ban version
 
-- name: update configuration file - /etc/fail2ban/fail2ban.conf
-  template:
-    src: fail2ban.conf.j2
-    dest: /etc/fail2ban/fail2ban.conf
-    owner: root
-    group: root
-    mode: 0644
-  become: true
-  notify: restart fail2ban
-  tags: [configuration, fail2ban, fail2ban-configuration]
+# - name: update configuration file - /etc/fail2ban/fail2ban.conf
+#   template:
+#     src: fail2ban.conf.j2
+#     dest: /etc/fail2ban/fail2ban.conf
+#     owner: root
+#     group: root
+#     mode: 0644
+#   become: true
+#   notify: restart fail2ban
+#   tags: [configuration, fail2ban, fail2ban-configuration]
 
 
 - name: update configuration file - /etc/fail2ban/fail2ban.conf
@@ -61,7 +67,6 @@
       src: 'fail2ban-iptables-ipset-proto6-allports.local.j2',
       dest: '/etc/fail2ban/action.d/iptables-ipset-proto6-allports.local'
     }
-
   notify: restart fail2ban
   tags: [configuration, fail2ban, fail2ban-configuration]
 
@@ -82,7 +87,7 @@
     line: 'FAIL2BAN_OPTS="-x"'
     state: present
   become: true
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
   tags: [fail2ban]
   notify:
     - restart fail2ban
@@ -98,3 +103,47 @@
     enabled: "{{ fail2ban_service_enabled }}"
   become: true
   tags: service
+  ignore_errors: true
+
+- block:
+    # - name: restart the service
+    #   service: name=fail2ban state=reloaded
+
+    - name: reload service fail2ban
+      systemd:
+        name: fail2ban
+        state: stopped
+      ignore_errors: true
+
+    - name: reload service fail2ban
+      systemd:
+        name: fail2ban
+        daemon_reload: true
+        state: started
+      ignore_errors: true
+
+    - name: get the output for systemd
+      command: "systemctl status fail2ban.service"
+      register: sysdoutput
+
+    - name: get the journal output
+      command: "journalctl -xe"
+      register: journoutput
+
+    - name: display output
+      debug:
+        msg:
+          - "{{ sysdoutput.stdout }}"
+          - "{{ journoutput.stdout }}"
+
+    - name: get log file
+      command: 'cat /var/log/fail2ban.log'
+      register: fail2banlog
+
+    - name: display logfile
+      debug:
+        msg: "{{ fail2banlog.stdout }}"
+
+  when:
+    - fail2ban_debug | bool
+#   - ansible_service_mgr == 'systemd'

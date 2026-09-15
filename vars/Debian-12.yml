@@ -1,10 +1,11 @@
 ---
-
 apache_daemon: apache2
 
-fail2ban_logtarget: /var/log/fail2ban.log
+fail2ban_config_backend: "systemd"
+
+fail2ban_logtarget: "SYSTEMD-JOURNAL"
 fail2ban_syslog_target: /var/log/fail2ban.log
-fail2ban_syslog_facility: 1
+fail2ban_syslog_facility: 0
 
 fail2ban_jails:
   - name: 'ssh'
@@ -15,10 +16,10 @@ fail2ban_jails:
     filter_upload: false
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'ssh'
-    logpath: "{{ fail2ban_authlog }}"
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'pam-generic'
     enabled: "{{ fail2ban_config_jail_pamgeneric_enabled }}"
+    journalmatch: "SYSLOG_IDENTIFIER=pam"
   - name: 'ssh-ddos'
     enabled: "{{ fail2ban_config_jail_sshddos_enabled }}"
     ports:
@@ -27,14 +28,12 @@ fail2ban_jails:
     filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'sshd-ddos'
-    logpath: "{{ fail2ban_authlog }}"
   - name: 'ssh-route'
     enabled: "{{ fail2ban_config_jail_sshroute_enabled }}"
     filter: 'sshd'
     filter_upload: false
     action: 'route'
     badip_category: 'ssh'
-    logpath: "{{ fail2ban_authlog }}"
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'webmin'
     enabled: "{{ fail2ban_config_jail_webmin_enabled }}"
@@ -46,7 +45,6 @@ fail2ban_jails:
     banaction: "{{ fail2ban_config_banaction }}"
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'webmin'
-    logpath: "{{ fail2ban_authlog }}"
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'apache'
     enabled: "{{ fail2ban_config_jail_apache_enabled }}"
@@ -58,6 +56,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'apache-noscript'
     enabled: "{{ fail2ban_config_jail_apache_enabled }}"
@@ -70,6 +69,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'apache-overflows'
     enabled: "{{ fail2ban_config_jail_apache_enabled }}"
@@ -78,6 +78,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
   - name: 'apache-modsecurity'
     enabled: "{{ fail2ban_config_jail_modsec_enabled }}"
     ports:
@@ -88,6 +89,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'modsecurity'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '2'
   - name: 'apache-badbots'
     enabled: "{{ fail2ban_config_jail_apache_enabled }}"
@@ -99,6 +101,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'badbots'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
   - name: 'apache-nohome'
     enabled: "{{ fail2ban_config_jail_apache_enabled }}"
@@ -111,6 +114,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
   - name: 'php-url-fopen'
     enabled: "{{ fail2ban_config_jail_php_enabled }}"
@@ -122,6 +126,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'php'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
   - name: 'exim'
     enabled: "{{ fail2ban_config_jail_exim_enabled }}"
@@ -132,7 +137,8 @@ fail2ban_jails:
     filter_upload: false
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'mail'
-    logpath: '/var/log/exim*/rejectlog'
+    logpath: '%(exim_main_log)s'
+    journalmatch: "_SYSTEMD_UNIT=exim4.service"
     maxretry: '1'
   - name: 'apache-w00tw00t'
     enabled: "false"
@@ -145,6 +151,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache-w00tw00t'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
   - name: 'apache-myadmin'
     enabled: "{{ fail2ban_config_jail_apache_enabled }}"
@@ -157,6 +164,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '2'
   - name: 'proftpd'
     enabled: "{{ fail2ban_config_jail_ftp_enabled }}"
@@ -204,6 +212,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'monit'
     logpath: "/var/log/monit/monit.log"
+    journalmatch: "_SYSTEMD_UNIT=monit.service"
   - name: 'apache-dosevasive'
     enabled: "{{ fail2ban_config_jail_apacheddos_enabled }}"
     ports:
@@ -213,6 +222,7 @@ fail2ban_jails:
     filter_upload: true
     action: "{{ fail2ban_config_jailaction }}"
     logpath: "/var/log/{{ apache_daemon }}*/*error.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     bantime: '240'
     maxretry: '10'
   - name: 'apache-cmsnoway'
@@ -225,6 +235,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: ''
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
   - name: 'apache-procselfenv'
     enabled: "{{ fail2ban_config_jail_procselfenv_enabled }}"
@@ -236,6 +247,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
   - name: 'drupal-register'
     note: 'CAUTION: only if you don''t allow registration'
@@ -249,6 +261,7 @@ fail2ban_jails:
     action: '%(action_mwl)s'
     badip_category: 'drupal'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '3'
   - name: 'drupal-psa-2018-004'
     note: 'CAUTION: can have false positives'
@@ -261,7 +274,8 @@ fail2ban_jails:
     banaction: 'iptables-ipset-proto6-allports'
     action: '%(action_mwl)s'
     badip_category: 'drupal'
-    logpath: "/var/log/apache2*/*access.log"
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
     bantime: '604800'
     destemails: "{{ fail2ban_config_destemail }}"
@@ -275,7 +289,8 @@ fail2ban_jails:
     banaction: 'iptables-ipset-proto6-allports'
     action: '%(action_mwl)s'
     badip_category: 'java'
-    logpath: "/var/log/apache2*/*access.log"
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
     bantime: '604800'
     destemails: "{{ fail2ban_config_destemail }}"    
@@ -289,7 +304,8 @@ fail2ban_jails:
     banaction: 'iptables-ipset-proto6-allports'
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: ''
-    logpath: "/var/log/apache2*/*access.log"
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '3'
     bantime: '604800'
     destemails: "{{ fail2ban_config_destemail }}"
@@ -303,6 +319,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '10'
     bantime: '3600'
     findtime: '60' 
@@ -316,6 +333,25 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'apache'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
     maxretry: '1'
     bantime: '604800'
     findtime: '30'     
+  - name: 'apache-408'
+    enabled: "{{ fail2ban_config_jail_apache_408_enabled }}"
+    ports:
+      - 'http'
+      - 'https'
+    filter: 'apache-408'
+    filter_upload: true
+    action: "{{ fail2ban_config_jailaction }}"
+    badip_category: 'apache'
+    logpath: "/var/log/{{ apache_daemon }}*/*access.log"
+    journalmatch: "_SYSTEMD_UNIT=apache2.service"
+    maxretry: '5'
+    bantime: '604800'
+    findtime: '30'     
+
+
+
+    

@@ -25,9 +25,17 @@ loglevel = {{ fail2ban_loglevel }}
 # Values:  STDOUT STDERR SYSLOG file  Default:  /var/log/fail2ban.log
 #
 logtarget = {{ fail2ban_logtarget }}
+
+
 {% if fail2ban_logtarget == "SYSLOG" %}
 syslog-target = {{ fail2ban_syslog_target }}
 syslog-facility = {{ fail2ban_syslog_facility }}
+# Option: syslogsocket
+# Notes: Set the syslog socket file. Only used when logtarget is SYSLOG
+#        auto uses platform.system() to determine predefined paths
+# Values: [ auto | FILE ]  Default: auto
+syslogsocket = auto
+
 {% endif %}
 
 # Option: socket
@@ -65,3 +73,9 @@ dbpurgeage = 86400
 {% else %}
 # dbpurgeage = 86400
 {% endif %}
+
+# Options: dbmaxmatches
+# Notes.: Number of matches stored in database per ticket (resolvable via
+#         tags <ipmatches>/<ipjailmatches> in actions)
+# Values: [ INT ] Default: 10
+# dbmaxmatches = 10
