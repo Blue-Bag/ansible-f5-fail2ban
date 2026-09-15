@@ -108,7 +108,7 @@ fail2ban_config_jail_drupal_register_enabled: false
 fail2ban_config_jail_procselfenv_enabled: false
 fail2ban_config_jail_drupal_psa_2018_004_enabled: false
 fail2ban_config_jail_sqli_char_attack_enabled: false
-fail2ban_config_jail_log4j-cve-2021-44228_enabled: false
+fail2ban_config_jail_log4j_cve_2021_44228_enabled: false
 fail2ban_config_jail_apache_406_enabled: false
 fail2ban_config_jail_apache_ua_sql_enabled: false
 fail2ban_config_jail_apache_408_enabled: false
