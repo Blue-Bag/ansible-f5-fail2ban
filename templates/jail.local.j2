@@ -11,7 +11,7 @@ findtime  = {{ fail2ban_config_findtime }}
 backend   = {{ fail2ban_config_backend }}
 {% endif %}
 logtarget = {{ fail2ban_logtarget }}
-ignoreip = {{ fail2ban_config_ignoreip | join(" ") }}
+ignoreip = {{ fail2ban_config_ignoreip | unique | sort | join(" ") }}
 
 
 # JAILS
@@ -39,7 +39,10 @@ action    = {{ jail.action }}
 {% if jail.logpath is defined %}
 logpath   = {{ jail.logpath }}
 {% endif %}
-{% if jail.journalmatch is defined %}
+{% if jail.backend is defined %}
+backend   = {{ jail.backend }}
+{% endif %}
+{% if jail.journalmatch is defined and jail.backend | default(fail2ban_config_backend | default('')) == 'systemd' %}
 journalmatch = {{ jail.journalmatch }}
 {% endif %}
 {% if jail.maxretry is defined %}

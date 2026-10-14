@@ -1,14 +1,20 @@
 ---
 apache_daemon: apache2
 
-fail2ban_config_backend: "systemd"
+# default backend; jails that read the journal set backend: systemd
+fail2ban_config_backend: "auto"
 
 fail2ban_logtarget: "SYSTEMD-JOURNAL"
 fail2ban_syslog_target: /var/log/fail2ban.log
 fail2ban_syslog_facility: 0
 
 fail2ban_jails:
+  - name: 'sshd'
+    note: 'enabled by the Debian package; reads the journal as there may be no auth.log'
+    backend: 'systemd'
+    enabled: true
   - name: 'ssh'
+    backend: 'systemd'
     enabled: "{{ fail2ban_config_jail_ssh_enabled }}"
     ports:
       - 'ssh'
@@ -18,9 +24,11 @@ fail2ban_jails:
     badip_category: 'ssh'
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'pam-generic'
+    backend: 'systemd'
     enabled: "{{ fail2ban_config_jail_pamgeneric_enabled }}"
     journalmatch: "SYSLOG_IDENTIFIER=pam"
   - name: 'ssh-ddos'
+    backend: 'systemd'
     enabled: "{{ fail2ban_config_jail_sshddos_enabled }}"
     ports:
       - 'ssh'
@@ -29,6 +37,7 @@ fail2ban_jails:
     action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'sshd-ddos'
   - name: 'ssh-route'
+    backend: 'systemd'
     enabled: "{{ fail2ban_config_jail_sshroute_enabled }}"
     filter: 'sshd'
     filter_upload: false
@@ -36,6 +45,7 @@ fail2ban_jails:
     badip_category: 'ssh'
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'webmin'
+    backend: 'systemd'
     enabled: "{{ fail2ban_config_jail_webmin_enabled }}"
     ports:
       - '10000'
@@ -180,6 +190,7 @@ fail2ban_jails:
     logpath: "/var/log/proftpd/proftpd.log"
     maxretry: "{{ fail2ban_config_maxretry}} "
   - name: 'recidive'
+    backend: 'systemd'
     enabled: "{{ fail2ban_config_jail_recidive_enabled }}"
     filter: 'recidive'
     filter_upload: false
@@ -191,6 +202,7 @@ fail2ban_jails:
     bantime: '604800'
     findtime: '86400'
   - name: 'drupal-auth'
+    backend: 'systemd'
     note: 'requires syslog'
     enabled: "{{ fail2ban_config_jail_drupalauth_enabled }}"
     ports:
@@ -258,7 +270,7 @@ fail2ban_jails:
     filter: 'drupal-register'
     filter_upload: true
     banaction: 'iptables-allports'
-    action: '%(action_mwl)s'
+    action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'drupal'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
     journalmatch: "_SYSTEMD_UNIT=apache2.service"
@@ -272,7 +284,7 @@ fail2ban_jails:
     filter: 'drupal-psa-2018-004'
     filter_upload: true
     banaction: 'iptables-ipset-proto6-allports'
-    action: '%(action_mwl)s'
+    action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'drupal'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
     journalmatch: "_SYSTEMD_UNIT=apache2.service"
@@ -287,7 +299,7 @@ fail2ban_jails:
     filter: 'log4j-cve-2021-44228'
     filter_upload: true
     banaction: 'iptables-ipset-proto6-allports'
-    action: '%(action_mwl)s'
+    action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'java'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
     journalmatch: "_SYSTEMD_UNIT=apache2.service"

@@ -26,7 +26,10 @@ fail2ban_config_maxretry: 3
 fail2ban_config_destemail:
   - "root"
 
-#fail2ban_config_backend: "systemd"
+fail2ban_config_backend: "auto"
+
+# open files limit for the service (systemd drop-in)
+fail2ban_limit_nofile: 65536
 
 # select ban option on specified ports or all ports
 fail2ban_config_banaction: iptables-multiport

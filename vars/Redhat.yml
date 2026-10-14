@@ -247,7 +247,7 @@ fail2ban_jails:
     filter: 'drupal-register'
     filter_upload: true
     banaction: 'iptables-allports'
-    action: '%(action_mwl)s'
+    action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'drupal'
     logpath: "/var/log/{{ apache_daemon }}*/*access.log"
     maxretry: '3'
@@ -260,7 +260,7 @@ fail2ban_jails:
     filter: 'drupal-psa-2018-004'
     filter_upload: true
     banaction: 'iptables-ipset-proto6-allports'
-    action: '%(action_mwl)s'
+    action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'drupal'
     logpath: "/var/log/apache2*/*access.log"
     maxretry: '1'
@@ -274,7 +274,7 @@ fail2ban_jails:
     filter: 'log4j-cve-2021-44228'
     filter_upload: true
     banaction: 'iptables-ipset-proto6-allports'
-    action: '%(action_mwl)s'
+    action: "{{ fail2ban_config_jailaction }}"
     badip_category: 'java'
     logpath: "/var/log/apache2*/*access.log"
     maxretry: '1'

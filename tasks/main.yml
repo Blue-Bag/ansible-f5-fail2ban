@@ -6,7 +6,7 @@
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - files:
-        - "vars/{{ ansible_facts['os_family'] }}-{{ ansible_distribution_major_version }}.yml"
+        - "vars/{{ ansible_facts['os_family'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
         - "vars/{{ ansible_facts['os_family'] }}.yml"
       skip: true
 
@@ -91,6 +91,37 @@
   tags: [fail2ban]
   notify:
     - restart fail2ban
+
+# with the systemd backend every jail opens every journal file,
+# which exhausts the default soft limit of 1024
+- block:
+    - name: Fail2ban | Ensure the systemd drop-in directory exists
+      file:
+        path: /etc/systemd/system/fail2ban.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Fail2ban | Raise the open files limit
+      copy:
+        dest: /etc/systemd/system/fail2ban.service.d/limits.conf
+        content: |
+          [Service]
+          LimitNOFILE={{ fail2ban_limit_nofile }}
+        owner: root
+        group: root
+        mode: 0644
+      register: _fail2ban_limits
+      notify: restart fail2ban
+
+    - name: Fail2ban | Reload systemd so the limit applies
+      systemd:
+        daemon_reload: true
+      when: _fail2ban_limits is changed
+  when: ansible_facts['service_mgr'] == 'systemd'
+  become: true
+  tags: [fail2ban]
 
 # check for the presence of  logs for the jails
 - import_tasks: touch_logs.yml
