@@ -4,7 +4,6 @@
 # Notes.:  command executed once at the start of Fail2Ban.
 # Values:  CMD
 #
-actionstart = iptables -N {{ fail2ban_jail_prefix }}-<name>
-              iptables -A {{ fail2ban_jail_prefix }}-<name> -j RETURN
-              iptables -I <chain> {{ fail2ban_rule_startindex  if fail2ban_rule_startindex > 1 else 1 }} -p <protocol> -j {{ fail2ban_jail_prefix }}-<name>
+actionstart = { <iptables> -C {{ fail2ban_jail_prefix }}-<name> -j RETURN >/dev/null 2>&1; } || { <iptables> -N {{ fail2ban_jail_prefix }}-<name> || true; <iptables> -A {{ fail2ban_jail_prefix }}-<name> -j RETURN; }
+              { <iptables> -C <chain> -p <protocol> -j {{ fail2ban_jail_prefix }}-<name> >/dev/null 2>&1; } || <iptables> -I <chain> {{ fail2ban_rule_startindex  if fail2ban_rule_startindex > 1 else 1 }} -p <protocol> -j {{ fail2ban_jail_prefix }}-<name>
 

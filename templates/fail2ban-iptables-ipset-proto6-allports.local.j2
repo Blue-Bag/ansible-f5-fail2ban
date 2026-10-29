@@ -24,14 +24,14 @@ before = iptables-blocktype.conf
 # Notes.:  command executed once at the start of Fail2Ban.
 # Values:  CMD
 #
-actionstart = ipset create {{ fail2ban_jail_prefix }}-<name> hash:ip timeout <bantime>
-              iptables -I INPUT {{ fail2ban_rule_startindex  if fail2ban_rule_startindex > 1 else 1 }} -m set --match-set {{ fail2ban_jail_prefix }}-<name> src -j <blocktype>
+actionstart = ipset create {{ fail2ban_jail_prefix }}-<name> hash:ip timeout <bantime> -exist
+              iptables -C INPUT -m set --match-set {{ fail2ban_jail_prefix }}-<name> src -j <blocktype> >/dev/null 2>&1 || iptables -I INPUT {{ fail2ban_rule_startindex  if fail2ban_rule_startindex > 1 else 1 }} -m set --match-set {{ fail2ban_jail_prefix }}-<name> src -j <blocktype>
 
 # Option:  actionstop
 # Notes.:  command executed once at the end of Fail2Ban
 # Values:  CMD
 #
-actionstop = iptables -D INPUT -m set --match-set fail2ban-<name> src -j <blocktype>
+actionstop = iptables -D INPUT -m set --match-set {{ fail2ban_jail_prefix }}-<name> src -j <blocktype>
              ipset flush {{ fail2ban_jail_prefix }}-<name>
              ipset destroy {{ fail2ban_jail_prefix }}-<name>
 
