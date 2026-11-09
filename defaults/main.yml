@@ -12,7 +12,7 @@ fail2ban_pkg_state: 'present'
 
 # "ignoreip" can be a single IP address, a CIDR mask or a DNS host or a list of IP addresses (see readme)
 fail2ban_config_ignoreip:
-  - "{{ ansible_ssh_host }}"
+  - "{{ ansible_host }}"
   - "127.0.0.1/8"
 
 # version differences - some use 'f2b'
