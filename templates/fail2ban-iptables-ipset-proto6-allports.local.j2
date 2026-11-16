@@ -35,6 +35,13 @@ actionstop = iptables -D INPUT -m set --match-set {{ fail2ban_jail_prefix }}-<na
              ipset flush {{ fail2ban_jail_prefix }}-<name>
              ipset destroy {{ fail2ban_jail_prefix }}-<name>
 
+# Option:  actioncheck
+# Notes.:  must match the rule added by actionstart, which has no protocol;
+#          the stock check looks for it with -p <protocol> and never finds it
+# Values:  CMD
+#
+actioncheck = iptables -C INPUT -m set --match-set {{ fail2ban_jail_prefix }}-<name> src -j <blocktype>
+
 # Option:  actionban
 # Notes.:  command executed when banning an IP. Take care that the
 #          command is executed with Fail2Ban user rights.
